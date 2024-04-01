@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
@@ -32,6 +33,10 @@ public class PlayerManager : MonoBehaviour
 
     [Header("External")]
     [SerializeField] Camera cam;
+    public float distance;
+    [SerializeField] GameObject selectedPlayer;
+    [SerializeField] GameObject spellUI;
+    [SerializeField] List<Transform> spells;
 
 
     // UNITY CYCLE
@@ -47,11 +52,15 @@ public class PlayerManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-
     }
     void Start()
     {
-
+        spells = new List<Transform>();
+        // Transform[] rangeData = objInventory.transform.GetComponentsInChildren<Transform>();
+        Transform[] rangeData = spellUI.transform.GetComponentsInChildren<Transform>(true);
+        spells.AddRange(rangeData);
+        spells.RemoveAt(0);
+        spellDeActive();
     }
 
     void Update()
@@ -63,25 +72,44 @@ public class PlayerManager : MonoBehaviour
 
     private void ManagerClick()
     {
-        Vector3 mousePos = cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -Camera.main.transform.position.z));
-        // RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePos), Vector2.zero);
-        RaycastHit2D[] hit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(mousePos), Vector2.zero);
+        RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition));
 
         if (Input.GetMouseButtonDown(0)) {
-            foreach (RaycastHit2D target in hit) {
-                if (target.collider.gameObject.CompareTag("")) { 
-                    
-                }
-            }
-            //if (hit.collider != null)
-            //{
-            //    Debug.Log("Target Position: " + hit.collider.gameObject.transform.position);
-            //    Debug.Log(hit.collider.name);
+            if (hit.collider.gameObject.CompareTag("player")) {
+                spellActive();
+                Debug.Log("Hi");
+                selectedPlayer = hit.collider.gameObject;
+                selectedPlayer.GetComponent<PlayerScript>().playerSelect();
 
-            //}
+            }
+            if (hit.collider.gameObject.CompareTag("ground")) {
+                spellDeActive();
+                Debug.Log("earth");
+                if (selectedPlayer != null) 
+                {
+                    selectedPlayer.GetComponent<PlayerScript>().playerSelectCancel();
+                    selectedPlayer = null;
+                }
+
+            }
         }
 
 
     }
 
+    private void spellDeActive() 
+    {
+        foreach (Transform target in spells) 
+        { 
+            target.gameObject.SetActive(false);
+        }
+    }
+
+    private void spellActive()
+    {
+        foreach (Transform target in spells)
+        {
+            target.gameObject.SetActive(true);
+        }
+    }
 }
