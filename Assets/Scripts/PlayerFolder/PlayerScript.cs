@@ -23,10 +23,15 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] protected bool isPlayerOffMouse;
     [SerializeField] protected bool isPlayerDownMouse;
     [SerializeField] protected bool isCommandedMove;
+    [SerializeField] protected bool isCommandedAttack;
+    [SerializeField] protected bool isMoveDone;
     [SerializeField] protected bool isAttackPlaying;
 
     [Header("UI Inspector")]
     [SerializeField] protected Image Indicator;
+
+    [Header("Target")]
+    [SerializeField] GameObject EnemyObject;
 
     public void playerSelect() {
         isClicked = true;

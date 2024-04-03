@@ -8,32 +8,17 @@ using UnityEngine.UIElements;
 
 public class PlayerWarrior: PlayerScript
 {
-    //[Header("Player Stat")]
-    //[SerializeField, Range(0, 3)] int playerID; // 0, 1, 2, 3 heroes
-    //[SerializeField] float playerHp;
-    //[SerializeField] float playerAtk;
-    //[SerializeField] float speed;
-    
-
-    // [Header("Player Check")]
-    // [SerializeField] protected bool isClicked;
-    // [SerializeField] bool isOnMouse;
-
-
-    // [Header("UI Inspector")]
-    // [SerializeField] Image Indicator;
-    //[SerializeField] Texture2D cursourDefault;
-    //[SerializeField] Texture2D cursorAttack;
-
-    //[Header("External")]
-    //[SerializeField] Camera cam;
+    [Header("Hit Collider")]
+    [SerializeField] BoxCollider2D AttackCollider;
+    [SerializeField] bool AttackOn;
 
 
     // UNITY CYCLE
 
     void Start()
     {
-        
+        AttackCollider = transform.GetChild(1).GetComponent<BoxCollider2D>();
+
     }
     void Update()
     {
@@ -46,24 +31,27 @@ public class PlayerWarrior: PlayerScript
     private void playerMove() {
         if (!isCommandedMove) return;
 
-        if (isAttackPlaying) return;
-        
+        if (AttackOn) return;
 
-        Vector3 convertedPos = Camera.main.ScreenToWorldPoint(MovePos);
-        // Debug.Log(MovePos);
+        Vector3 convertedPos = MovePos;
+        if (!isCommandedAttack) 
+        {
+            MovePos.z = Camera.main.transform.position.z;
+            convertedPos = Camera.main.ScreenToWorldPoint(MovePos);
+            convertedPos.z = transform.position.z;
 
-        Vector3 looking = MovePos.x > transform.position.x ? new Vector3(-1f * transform.localScale.x, 1f, 1f) : new Vector3(1f * transform.localScale.x, 1f, 1f);
-        transform.localScale = looking;
+ 
+        }
 
-        convertedPos.z = transform.position.z;
-        if (Vector3.Distance(convertedPos, transform.position) < 0.1f) {
+        if (Vector3.Distance(convertedPos, transform.position) < 0.001f)
+        {
             isCommandedMove = false;
             return;
         }
 
-        // transform.position = (convertedPos - transform.position).normalized * Time.deltaTime;
-        // transform.position = (convertedPos - transform.position).normalized * Time.deltaTime;
-        // transform.position = Vector3.Lerp(transform.position, convertedPos, Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, convertedPos, speed * Time.deltaTime);
+        Vector3 looking = convertedPos.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+        transform.localScale = looking;
     }
 
     private void playerAttack() { 
@@ -71,12 +59,13 @@ public class PlayerWarrior: PlayerScript
     }
 
     public virtual void commandMove(Vector3 _pos) {
-        isCommandedMove = true;
+        isCommandedMove = true; 
         MovePos = _pos;
     }
 
     public override void commandAttack() {
         // isAttackPlaying = true;
+        Debug.Log("Attack On?");
     }
 
     public override void commandSpell(int _value) { }
@@ -90,10 +79,6 @@ public class PlayerWarrior: PlayerScript
 
     private void OnMouseDrag()
     {
-        
-        Debug.Log("Mouse Dragged");
-        Debug.Log(Input.mousePosition);
-        Debug.Log(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
 
     }
@@ -110,6 +95,7 @@ public class PlayerWarrior: PlayerScript
     {
         if (isClicked && isPlayerDragToMove && isPlayerDownMouse)
         {
+            isCommandedAttack = false;
             Debug.Log("command on?");
             commandMove(Input.mousePosition);
             isPlayerDragToMove = false;
@@ -117,10 +103,17 @@ public class PlayerWarrior: PlayerScript
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
             if (hit.collider.CompareTag("enemy")) {
-                commandAttack();
+                Debug.Log("Enemy Attack?");
+                isCommandedAttack = true;
+                if (!AttackOn) {
+                    commandMove(hit.collider.transform.position);
+                }
+                
             }
+            AttackOn = false;
         }
 
+        isPlayerDownMouse = false;
         isPlayerDownMouse = false;
     }
 
@@ -156,5 +149,33 @@ public class PlayerWarrior: PlayerScript
     public void setPlayerAtk(int _value)
     {
         playerAtk = _value;
+    }
+
+    public void AttackTriggerEnter(PlayerHitBox.enumHitType _hitType, Collider2D collision)
+    {
+        switch (_hitType) 
+        {
+            case PlayerHitBox.enumHitType.EnemyCheck:
+                if (isCommandedAttack)
+                {
+                    Debug.Log("Attack On!!");
+                    AttackOn = true;
+                }
+                break;
+        }
+    }
+
+    public void AttackTriggerExit(PlayerHitBox.enumHitType _hitType, Collider2D collision)
+    {
+        switch (_hitType)
+        {
+            case PlayerHitBox.enumHitType.EnemyCheck:
+                if (isCommandedAttack) 
+                {
+                    commandMove(collision.transform.position);
+                }
+                break;
+        }
+
     }
 }
