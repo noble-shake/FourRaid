@@ -8,24 +8,20 @@ using UnityEngine.UIElements;
 
 public class PlayerWarrior: PlayerScript
 {
-    /*
-     * Player Stat
-     * Player State
-     * 
-     */
+    //[Header("Player Stat")]
+    //[SerializeField, Range(0, 3)] int playerID; // 0, 1, 2, 3 heroes
+    //[SerializeField] float playerHp;
+    //[SerializeField] float playerAtk;
+    //[SerializeField] float speed;
+    
 
-    [Header("Player Stat")]
-    [SerializeField, Range(0, 3)] int playerID; // 0, 1, 2, 3 heroes
-    [SerializeField] float playerHp;
-    [SerializeField] float playerAtk;
-
-
-    [Header("Player Check")]
-    [SerializeField] bool isClicked;
+    // [Header("Player Check")]
+    // [SerializeField] protected bool isClicked;
+    // [SerializeField] bool isOnMouse;
 
 
-    [Header("UI Inspector")]
-    [SerializeField] Image Indicator;
+    // [Header("UI Inspector")]
+    // [SerializeField] Image Indicator;
     //[SerializeField] Texture2D cursourDefault;
     //[SerializeField] Texture2D cursorAttack;
 
@@ -41,23 +37,103 @@ public class PlayerWarrior: PlayerScript
     }
     void Update()
     {
+        playerMove();
+        playerAttack();
     }
 
     // MAIN SCRIPT
 
-    public virtual void commandMove() { }
+    private void playerMove() {
+        if (!isCommandedMove) return;
 
-    public virtual void commandAtackk() { }
+        if (isAttackPlaying) return;
+        
 
-    public virtual void commandSpell(int _value) { }
+        Vector3 convertedPos = Camera.main.ScreenToWorldPoint(MovePos);
+        // Debug.Log(MovePos);
 
+        Vector3 looking = MovePos.x > transform.position.x ? new Vector3(-1f * transform.localScale.x, 1f, 1f) : new Vector3(1f * transform.localScale.x, 1f, 1f);
+        transform.localScale = looking;
 
-    public override void playerSelect() {
-        isClicked = true;
+        convertedPos.z = transform.position.z;
+        if (Vector3.Distance(convertedPos, transform.position) < 0.1f) {
+            isCommandedMove = false;
+            return;
+        }
+
+        // transform.position = (convertedPos - transform.position).normalized * Time.deltaTime;
+        // transform.position = (convertedPos - transform.position).normalized * Time.deltaTime;
+        // transform.position = Vector3.Lerp(transform.position, convertedPos, Time.deltaTime);
     }
 
-    public override void playerSelectCancel() {
-        isClicked = false;
+    private void playerAttack() { 
+        
+    }
+
+    public virtual void commandMove(Vector3 _pos) {
+        isCommandedMove = true;
+        MovePos = _pos;
+    }
+
+    public override void commandAttack() {
+        // isAttackPlaying = true;
+    }
+
+    public override void commandSpell(int _value) { }
+
+
+    private void OnMouseEnter()
+    {
+        isPlayerOnMouse = true;
+        Debug.Log("isPlayerOnMous");
+    }
+
+    private void OnMouseDrag()
+    {
+        
+        Debug.Log("Mouse Dragged");
+        Debug.Log(Input.mousePosition);
+        Debug.Log(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+
+
+    }
+
+    private void OnMouseDown()
+    {
+        if (isClicked) {
+            isPlayerDownMouse = true;
+            isPlayerDragToMove = true;
+        }
+    }
+
+    private void OnMouseUp()
+    {
+        if (isClicked && isPlayerDragToMove && isPlayerDownMouse)
+        {
+            Debug.Log("command on?");
+            commandMove(Input.mousePosition);
+            isPlayerDragToMove = false;
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
+            if (hit.collider.CompareTag("enemy")) {
+                commandAttack();
+            }
+        }
+
+        isPlayerDownMouse = false;
+    }
+
+    private void OnMouseOver()
+    {
+
+
+
+    }
+
+    private void OnMouseExit()
+    {
+        isPlayerOnMouse = false;
     }
 
     public int getPlayerID() {
@@ -80,20 +156,5 @@ public class PlayerWarrior: PlayerScript
     public void setPlayerAtk(int _value)
     {
         playerAtk = _value;
-    }
-
-    public override void OnDrag(PointerEventData eventData)
-    {
-        Debug.Log("Drag On");
-    }
-
-    public override void OnBeginDrag(PointerEventData eventData)
-    {
-        Debug.Log("Drag Begin");
-    }
-
-    public override void OnEndDrag(PointerEventData eventData)
-    {
-        Debug.Log("Drag End");
     }
 }
