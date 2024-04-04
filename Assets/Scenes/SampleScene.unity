@@ -240,7 +240,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &215761165
 RectTransform:
   m_ObjectHideFlags: 0
@@ -582,8 +582,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerID: 0
-  playerHp: 0
+  playerMaxHp: 0
+  playerCurHp: 0
   playerAtk: 0
+  playerForce: 0
   speed: 2
   MovePos: {x: 0, y: 0, z: 0}
   isClicked: 0
@@ -597,7 +599,7 @@ MonoBehaviour:
   isMoveDone: 0
   isAttackPlaying: 0
   EnemyObject: {fileID: 0}
-  AttackCollider: {fileID: 0}
+  AttackCollider: {fileID: 582031164}
   AttackOn: 0
 --- !u!50 &502510128
 Rigidbody2D:
@@ -1017,6 +1019,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitType: 0
+  player: {fileID: 502510127}
 --- !u!61 &582031164
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1785,6 +1788,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitType: 0
+  player: {fileID: 1145417212}
 --- !u!1 &834843821
 GameObject:
   m_ObjectHideFlags: 0
@@ -2711,8 +2715,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerID: 0
-  playerHp: 0
+  playerMaxHp: 0
+  playerCurHp: 0
   playerAtk: 0
+  playerForce: 0
   speed: 2
   MovePos: {x: 0, y: 0, z: 0}
   isClicked: 0
@@ -2726,7 +2732,7 @@ MonoBehaviour:
   isMoveDone: 0
   isAttackPlaying: 0
   EnemyObject: {fileID: 0}
-  AttackCollider: {fileID: 0}
+  AttackCollider: {fileID: 831679505}
   AttackOn: 0
 --- !u!1 &1324519193
 GameObject:

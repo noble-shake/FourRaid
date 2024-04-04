@@ -11,7 +11,7 @@ public class PlayerHitBox : MonoBehaviour
     }
 
     [SerializeField] private enumHitType hitType;
-    PlayerWarrior player;
+    public PlayerWarrior player;
 
     void Start()
     {

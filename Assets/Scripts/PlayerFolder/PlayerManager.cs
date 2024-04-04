@@ -60,7 +60,6 @@ public class PlayerManager : MonoBehaviour
     void Start()
     {
         spells = new List<Transform>();
-        // Transform[] rangeData = objInventory.transform.GetComponentsInChildren<Transform>();
         Transform[] rangeData = spellUI.transform.GetComponentsInChildren<Transform>(true);
         spells.AddRange(rangeData);
         spells.RemoveAt(0);
@@ -69,55 +68,57 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
-        
         UnitSelect();
     }
 
-    public void commandAtackk() { }
+    public void commandAttack() { }
 
     public void commandSpell(int _value) { }
 
     private void UnitSelect()
     {
-
-
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
-        // RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray);
-
-
+        RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray);
 
         if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
-
             bool isPlayerExist = false;
 
-            if (hit.collider.gameObject.CompareTag("player"))
+            foreach (RaycastHit2D target in hits)
             {
-                isPlayerExist = true;
-                spellActive();
-                Debug.Log("Hi");
-                if (selectedPlayer != null && selectedPlayer != hit.collider.gameObject)
+                if (target.collider.CompareTag("player"))
                 {
-                    selectedPlayer.GetComponent<PlayerScript>().playerSelectCancel();
-                    selectedPlayer = null;
-                    isPlayerCheck = false;
-                }
-                selectedPlayer = hit.collider.gameObject;
-                selectedPlayer.GetComponent<PlayerScript>().playerSelect();
-                isPlayerCheck = true;
-            }
-            else if (!isPlayerExist && isPlayerCheck)
-            {
-                if (hit.collider.gameObject.CompareTag("ground") )
-                {
-                    spellDeActive();
-                    Debug.Log("earth");
-                    if (selectedPlayer != null)
+                    isPlayerExist = true;
+                    spellActive();
+                    if (selectedPlayer != null && selectedPlayer != target.collider.gameObject)
                     {
                         selectedPlayer.GetComponent<PlayerScript>().playerSelectCancel();
                         selectedPlayer = null;
                         isPlayerCheck = false;
+                    }
+                    selectedPlayer = target.collider.gameObject;
+                    selectedPlayer.GetComponent<PlayerScript>().playerSelect();
+                    isPlayerCheck = true;
+
+                    break;
+                }
+            }
+
+            // Unity Select Off
+            if (!isPlayerExist && isPlayerCheck) 
+            {
+                foreach (RaycastHit2D target in hits)
+                {
+                    if (target.collider.CompareTag("ground"))
+                    {
+                        spellDeActive();
+                        if (selectedPlayer != null)
+                        {
+                            selectedPlayer.GetComponent<PlayerScript>().playerSelectCancel();
+                            selectedPlayer = null;
+                            isPlayerCheck = false;
+                            break;
+                        }
                     }
                 }
             }

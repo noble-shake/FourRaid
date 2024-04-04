@@ -39,8 +39,6 @@ public class PlayerWarrior: PlayerScript
             MovePos.z = Camera.main.transform.position.z;
             convertedPos = Camera.main.ScreenToWorldPoint(MovePos);
             convertedPos.z = transform.position.z;
-
- 
         }
 
         if (Vector3.Distance(convertedPos, transform.position) < 0.001f)
@@ -54,8 +52,10 @@ public class PlayerWarrior: PlayerScript
         transform.localScale = looking;
     }
 
-    private void playerAttack() { 
-        
+    private void playerAttack() {
+        if (!AttackOn) return;
+
+        if (EnemyObject == null) return;
     }
 
     public virtual void commandMove(Vector3 _pos) {
@@ -79,8 +79,7 @@ public class PlayerWarrior: PlayerScript
 
     private void OnMouseDrag()
     {
-
-
+        // indicator process
     }
 
     private void OnMouseDown()
@@ -88,6 +87,8 @@ public class PlayerWarrior: PlayerScript
         if (isClicked) {
             isPlayerDownMouse = true;
             isPlayerDragToMove = true;
+
+            // indicator process
         }
     }
 
@@ -102,26 +103,19 @@ public class PlayerWarrior: PlayerScript
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
+            AttackOn = false;
+
             if (hit.collider.CompareTag("enemy")) {
                 Debug.Log("Enemy Attack?");
                 isCommandedAttack = true;
                 if (!AttackOn) {
                     commandMove(hit.collider.transform.position);
                 }
-                
             }
-            AttackOn = false;
         }
-
         isPlayerDownMouse = false;
-        isPlayerDownMouse = false;
-    }
 
-    private void OnMouseOver()
-    {
-
-
-
+        // indicator process
     }
 
     private void OnMouseExit()
@@ -129,36 +123,16 @@ public class PlayerWarrior: PlayerScript
         isPlayerOnMouse = false;
     }
 
-    public int getPlayerID() {
-        return playerID;
-    }
-    public float getPlayerHp() {
-        return playerHp;
-    }
-    public float getPlayerAtk() {
-        return playerAtk;
-    }
-
-    public void setPlayerID(int _value) {
-        playerID = _value;
-    }
-    public void setPlayerHp(int _value)
-    {
-        playerHp = _value;
-    }
-    public void setPlayerAtk(int _value)
-    {
-        playerAtk = _value;
-    }
 
     public void AttackTriggerEnter(PlayerHitBox.enumHitType _hitType, Collider2D collision)
     {
         switch (_hitType) 
         {
             case PlayerHitBox.enumHitType.EnemyCheck:
-                if (isCommandedAttack)
+                if (isCommandedAttack && collision.CompareTag("enemy"))
                 {
                     Debug.Log("Attack On!!");
+                    EnemyObject = collision.gameObject;
                     AttackOn = true;
                 }
                 break;
