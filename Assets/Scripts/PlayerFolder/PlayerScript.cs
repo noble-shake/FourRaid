@@ -23,6 +23,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] protected bool isClicked;
     [SerializeField] protected bool isAlive;
     [SerializeField] protected GameObject IndicatorPlayer;
+    [SerializeField] protected LineRenderer IndicatorLine;
     [SerializeField] protected bool isPlayerOnMouse;
     [SerializeField] protected bool isPlayerDragToMove;
     [SerializeField] protected bool isPlayerOffMouse;

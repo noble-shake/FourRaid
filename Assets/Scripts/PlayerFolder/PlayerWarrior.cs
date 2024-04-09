@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -115,30 +117,40 @@ public class PlayerWarrior: PlayerScript
         // indicator process
 
         if (isClicked && isPlayerDragToMove) {
-            float angle;
-
             Vector3 IndicatorPos = IndicatorPlayer.transform.GetChild(1).transform.position;
-            
-            Vector2 TargetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 ConvertedIndicator = Camera.main.WorldToScreenPoint(IndicatorPos);
-            Vector2 ConvertedTargetPos = new Vector2(Camera.main.WorldToScreenPoint(TargetPos).x, Camera.main.WorldToScreenPoint(TargetPos).y);
 
-            float ScaleX = Vector2.Distance(ConvertedIndicator, ConvertedTargetPos);
-            Vector3 IndicatorChange = new Vector3(ScaleX, 20, 0);
+            Vector3 TargetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            TargetPos.z = 0f;
+            Vector3 ConvertedIndicator = Camera.main.WorldToScreenPoint(IndicatorPos);
+           
 
-            IndicatorPlayer.transform.GetChild(1).transform.localScale = IndicatorChange;
-            angle = Mathf.Atan2(TargetPos.y - IndicatorPos.y, TargetPos.x - IndicatorPos.x) * Mathf.Rad2Deg;
-            IndicatorPlayer.transform.GetChild(1).transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            IndicatorLine.positionCount = 2;
+            Vector3[] vector2s = new Vector3[2] { IndicatorPos, TargetPos };
+            IndicatorLine.SetPositions(vector2s);
         }
     }
 
     private void OnMouseDown()
     {
-        if (isClicked) {
+        if (isClicked)
+        {
             isPlayerDownMouse = true;
             isPlayerDragToMove = true;
             IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(true);
         }
+
+        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //RaycastHit2D[] hit = Physics2D.GetRayIntersectionAll(ray);
+        //if (hit.Length > 0)
+        //{
+        //    int count = hit.Length;
+        //    for (int iNum = 0; iNum < count; ++iNum)
+        //    {
+        //        Debug.Log(hit[iNum].transform.name);
+        //    }
+        //}
+    
+
     }
 
     private void OnMouseUp()
