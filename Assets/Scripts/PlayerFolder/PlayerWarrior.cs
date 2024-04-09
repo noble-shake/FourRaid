@@ -113,20 +113,23 @@ public class PlayerWarrior: PlayerScript
     private void OnMouseDrag()
     {
         // indicator process
-        float angle;
 
-        Vector3 IndicatorPos = IndicatorPlayer.transform.GetChild(1).transform.position;
+        if (isClicked && isPlayerDragToMove) {
+            float angle;
 
-        Vector2 TargetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 IndicatorPos = IndicatorPlayer.transform.GetChild(1).transform.position;
+            
+            Vector2 TargetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 ConvertedIndicator = Camera.main.WorldToScreenPoint(IndicatorPos);
+            Vector2 ConvertedTargetPos = new Vector2(Camera.main.WorldToScreenPoint(TargetPos).x, Camera.main.WorldToScreenPoint(TargetPos).y);
 
-        float ScaleX = Mathf.Abs(Camera.main.WorldToScreenPoint(IndicatorPos).x - Camera.main.WorldToScreenPoint(TargetPos).x);
-        Vector3 IndicatorChange = new Vector3(ScaleX, 20, 0);
+            float ScaleX = Vector2.Distance(ConvertedIndicator, ConvertedTargetPos);
+            Vector3 IndicatorChange = new Vector3(ScaleX, 20, 0);
 
-        IndicatorPlayer.transform.GetChild(1).transform.localScale = IndicatorChange;
-        angle = Mathf.Atan2(TargetPos.y - IndicatorPos.y, TargetPos.x - IndicatorPos.x) * Mathf.Rad2Deg;
-        IndicatorPlayer.transform.GetChild(1).transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        
-        
+            IndicatorPlayer.transform.GetChild(1).transform.localScale = IndicatorChange;
+            angle = Mathf.Atan2(TargetPos.y - IndicatorPos.y, TargetPos.x - IndicatorPos.x) * Mathf.Rad2Deg;
+            IndicatorPlayer.transform.GetChild(1).transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
     }
 
     private void OnMouseDown()
@@ -148,6 +151,7 @@ public class PlayerWarrior: PlayerScript
             isPlayerDragToMove = false;
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
             RaycastHit2D[] hit = Physics2D.GetRayIntersectionAll(ray);
             AttackOn = false;
 
