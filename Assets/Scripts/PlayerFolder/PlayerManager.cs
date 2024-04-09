@@ -41,6 +41,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] GameObject selectedPlayer;
     [SerializeField] GameObject spellUI;
     [SerializeField] List<Transform> spells;
+    [SerializeField] List<GameObject> Heroes;
 
 
     // UNITY CYCLE
@@ -71,20 +72,26 @@ public class PlayerManager : MonoBehaviour
         UnitSelect();
     }
 
+    public List<GameObject> getHeroesObjects() {
+        return Heroes;
+    }
+
     public void commandAttack() { }
 
     public void commandSpell(int _value) { }
 
     private void UnitSelect()
     {
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray);
+        RaycastHit[] hits = Physics.RaycastAll(ray);
+        // RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray);
 
         if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             bool isPlayerExist = false;
 
-            foreach (RaycastHit2D target in hits)
+            foreach (RaycastHit target in hits)
             {
                 if (target.collider.CompareTag("player"))
                 {
@@ -107,7 +114,7 @@ public class PlayerManager : MonoBehaviour
             // Unity Select Off
             if (!isPlayerExist && isPlayerCheck) 
             {
-                foreach (RaycastHit2D target in hits)
+                foreach (RaycastHit target in hits)
                 {
                     if (target.collider.CompareTag("ground"))
                     {
@@ -124,6 +131,7 @@ public class PlayerManager : MonoBehaviour
             }
         }
     }
+
 
     private void spellDeActive() 
     {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 
 public class PlayerScript : MonoBehaviour
@@ -13,12 +13,15 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] protected float playerMaxHp;
     [SerializeField] protected float playerCurHp;
     [SerializeField] protected float playerAtk;
+    [SerializeField] protected float playerAtkSpeed;
+    [SerializeField] protected float playerAtkAggro;
     [SerializeField] protected float playerForce;
     [SerializeField] protected float speed;
     [SerializeField] protected Vector3 MovePos;
 
     [Header("Player Check")]
     [SerializeField] protected bool isClicked;
+    [SerializeField] protected bool isAlive;
     [SerializeField] protected GameObject IndicatorPlayer;
     [SerializeField] protected bool isPlayerOnMouse;
     [SerializeField] protected bool isPlayerDragToMove;
@@ -32,18 +35,34 @@ public class PlayerScript : MonoBehaviour
     [Header("UI Inspector")]
     [SerializeField] protected Image Indicator;
     [SerializeField] protected Image[] SpellIcon;
+    [SerializeField] protected float[] SpellAggro;
+    [SerializeField] protected Slider HPBarUI;
 
     [Header("Target")]
     [SerializeField] protected GameObject EnemyObject;
 
+    public void HPBarUIVisbile() {
+        if (playerCurHp == playerMaxHp)
+        {
+            HPBarUI.gameObject.SetActive(false);
+        }
+        else {
+            HPBarUI.gameObject.SetActive(true);
+        }
+    }
+
     public void playerSelect() {
         isClicked = true;
-        IndicatorPlayer.SetActive(true);
+        IndicatorPlayer.transform.GetChild(0).transform.gameObject.SetActive(true);
     }
 
     public void playerSelectCancel() {
         isClicked = false;
-        IndicatorPlayer.SetActive(false);
+        IndicatorPlayer.transform.GetChild(0).transform.gameObject.SetActive(false);
+    }
+
+    public bool getPlayerAlive() {
+        return isAlive;
     }
 
     public virtual void commandMove(Vector2 _pos) { }
@@ -59,6 +78,11 @@ public class PlayerScript : MonoBehaviour
             // die
             playerCurHp = 0;
         }
+        HPBarUIVisbile();
+        if (HPBarUI.gameObject.activeSelf) {
+            HPBarUI.value = playerCurHp;
+        }
+
     }
 
     public void healHp(float _value) 
@@ -67,6 +91,12 @@ public class PlayerScript : MonoBehaviour
         if (playerCurHp > playerMaxHp)
         {
             playerCurHp = playerMaxHp;
+        }
+
+        HPBarUIVisbile();
+        if (HPBarUI.gameObject.activeSelf)
+        {
+            HPBarUI.value = playerCurHp;
         }
     }
 
