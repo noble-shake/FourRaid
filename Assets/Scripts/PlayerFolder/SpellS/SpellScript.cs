@@ -13,13 +13,13 @@ public enum SpellType
     SpellNonActive,
 };
 
-public class SpellScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IDragHandler, IDropHandler
+public class SpellScript : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
 
     [Header("Inspetor")]
-    [SerializeField, Range(0, 3)] int spellSlotID;
-    [SerializeField] string SpellType;
-    [SerializeField] GameObject privilegedPlayer;
+    [SerializeField, Range(0, 3)] protected int spellSlotID;
+    [SerializeField] protected int spellType;
+    [SerializeField] protected GameObject privilegedPlayer;
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +33,10 @@ public class SpellScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         
     }
 
+    protected virtual void SpellInit() { 
+        
+    }
+
     public GameObject getPlayerPrivilege() 
     {
         return privilegedPlayer;
@@ -43,18 +47,6 @@ public class SpellScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         privilegedPlayer = _object;
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        Debug.Log("Spell Icon UP");
-        Debug.Log($"Slot ID : {spellSlotID}");
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        Debug.Log("Spell Icon UP");
-        Debug.Log($"Slot ID : {spellSlotID}");
-    }
-
     public void OnPointerDown(PointerEventData eventData)
     {
         Debug.Log("Spell Icon UP");
@@ -63,16 +55,31 @@ public class SpellScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Spell Icon UP");
+        Debug.Log($"Slot ID : {spellSlotID}");
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Spell Icon UP");
+        Debug.Log($"Slot ID : {spellSlotID}");
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Spell Icon UP");
+        Debug.Log($"Slot ID : {spellSlotID}");
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        Debug.Log("Spell Icon UP");
+        Debug.Log($"Slot ID : {spellSlotID}");
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        Debug.Log("Spell Icon UP");
+        Debug.Log($"Slot ID : {spellSlotID}");
     }
 }

@@ -84,14 +84,17 @@ public class PlayerManager : MonoBehaviour
     {
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit[] hits = Physics.RaycastAll(ray);
-        // RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray);
+        // RaycastHit[] hits = Physics.RaycastAll(ray);
+        RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray);
 
         if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             bool isPlayerExist = false;
 
-            foreach (RaycastHit target in hits)
+            // for(int inum = 0; )
+
+
+            foreach (RaycastHit2D target in hits)
             {
                 if (target.collider.CompareTag("player"))
                 {
@@ -114,7 +117,7 @@ public class PlayerManager : MonoBehaviour
             // Unity Select Off
             if (!isPlayerExist && isPlayerCheck) 
             {
-                foreach (RaycastHit target in hits)
+                foreach (RaycastHit2D target in hits)
                 {
                     if (target.collider.CompareTag("ground"))
                     {
