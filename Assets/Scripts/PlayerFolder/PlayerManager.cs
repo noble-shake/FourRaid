@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -40,7 +41,7 @@ public class PlayerManager : MonoBehaviour
     public float distance;
     [SerializeField] GameObject selectedPlayer;
     [SerializeField] GameObject spellUI;
-    [SerializeField] List<Transform> spells;
+    [SerializeField] List<SpellScript> spells;
     [SerializeField] List<GameObject> Heroes;
 
 
@@ -60,10 +61,10 @@ public class PlayerManager : MonoBehaviour
     }
     void Start()
     {
-        spells = new List<Transform>();
-        Transform[] rangeData = spellUI.transform.GetComponentsInChildren<Transform>(true);
+        spells = new List<SpellScript>();
+        SpellScript[] rangeData = spellUI.transform.GetComponentsInChildren<SpellScript>(true);
         spells.AddRange(rangeData);
-        spells.RemoveAt(0);
+        //spells.RemoveAt(0);
         spellDeActive();
     }
 
@@ -99,16 +100,18 @@ public class PlayerManager : MonoBehaviour
                 if (target.collider.CompareTag("player"))
                 {
                     isPlayerExist = true;
-                    spellActive();
+                    
                     if (selectedPlayer != null && selectedPlayer != target.collider.gameObject)
                     {
                         selectedPlayer.GetComponent<PlayerScript>().playerSelectCancel();
                         selectedPlayer = null;
                         isPlayerCheck = false;
                     }
+                   
                     selectedPlayer = target.collider.gameObject;
                     selectedPlayer.GetComponent<PlayerScript>().playerSelect();
                     isPlayerCheck = true;
+                    spellActive();
 
                     break;
                 }
@@ -138,7 +141,7 @@ public class PlayerManager : MonoBehaviour
 
     private void spellDeActive() 
     {
-        foreach (Transform target in spells) 
+        foreach (SpellScript target in spells) 
         { 
             target.gameObject.SetActive(false);
         }
@@ -146,9 +149,18 @@ public class PlayerManager : MonoBehaviour
 
     private void spellActive()
     {
-        foreach (Transform target in spells)
-        {
-            target.gameObject.SetActive(true);
+        Sprite[] Icons = selectedPlayer.GetComponent<PlayerScript>().getSpellIcon();
+
+        for (int inum = 0; inum < spells.Count; inum++) {
+            spells[inum].gameObject.SetActive(true);
+            spells[inum].gameObject.GetComponent<SpellScript>().setIconSprite(Icons[inum]);
+            spells[inum].gameObject.GetComponent<SpellScript>().setPlayerPrivilage(selectedPlayer);
+            spells[inum] = selectedPlayer.GetComponent<PlayerScript>().overrideSpell(spells[inum]);
+            PlayerScript sc = selectedPlayer.GetComponent<PlayerScript>();
+
+            StartCoroutine(sc.cor());
+            
         }
+
     }
 }

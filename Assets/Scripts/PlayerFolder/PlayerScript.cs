@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -35,12 +37,21 @@ public class PlayerScript : MonoBehaviour
 
     [Header("UI Inspector")]
     [SerializeField] protected Image Indicator;
-    [SerializeField] protected Image[] SpellIcon;
+    [SerializeField] protected Sprite[] SpellIcon;
+    [SerializeField] protected SpellScript[] OverridingSpells;
     [SerializeField] protected float[] SpellAggro;
     [SerializeField] protected Slider HPBarUI;
 
     [Header("Target")]
     [SerializeField] protected GameObject EnemyObject;
+
+    public SpellScript overrideSpell(SpellScript _input) {
+        // _input = _input.GetComponent<SpellWarrior1>();
+
+        //return GetComponent("SpellWarrior1");
+        return _input.GetComponent<SpellWarrior1>();
+    }
+
 
     public void HPBarUIVisbile() {
         if (playerCurHp == playerMaxHp)
@@ -50,6 +61,10 @@ public class PlayerScript : MonoBehaviour
         else {
             HPBarUI.gameObject.SetActive(true);
         }
+    }
+
+    public Sprite[] getSpellIcon() {
+        return SpellIcon;
     }
 
     public void playerSelect() {
@@ -128,5 +143,14 @@ public class PlayerScript : MonoBehaviour
     public void setPlayerAtk(int _value)
     {
         playerAtk = _value;
+    }
+
+    public IEnumerator cor()
+    {
+        while (true)
+        {
+            Debug.Log("Test");
+            yield return null;
+        }
     }
 }

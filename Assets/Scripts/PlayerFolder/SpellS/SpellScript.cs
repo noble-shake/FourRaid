@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Unity.VisualScripting;
+using System.Linq.Expressions;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 [System.Serializable]
 public enum SpellType 
@@ -20,21 +23,27 @@ public class SpellScript : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     [SerializeField, Range(0, 3)] protected int spellSlotID;
     [SerializeField] protected int spellType;
     [SerializeField] protected GameObject privilegedPlayer;
+    [SerializeField] protected Image IconImage;
+    [SerializeField] protected float cooltime;
+    [SerializeField] protected float currenmt_cooltime;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        IconImage = GetComponent<Image>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
 
     protected virtual void SpellInit() { 
         
+    }
+
+    public void setIconSprite(Sprite _spell) {
+        IconImage.sprite = _spell;
     }
 
     public GameObject getPlayerPrivilege() 
@@ -45,36 +54,32 @@ public class SpellScript : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void setPlayerPrivilage(GameObject _object) 
     { 
         privilegedPlayer = _object;
+        
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("Spell Icon UP");
-        Debug.Log($"Slot ID : {spellSlotID}");
+
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        Debug.Log("Spell Icon UP");
-        Debug.Log($"Slot ID : {spellSlotID}");
+
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        Debug.Log("Spell Icon UP");
-        Debug.Log($"Slot ID : {spellSlotID}");
+
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-        Debug.Log("Spell Icon UP");
-        Debug.Log($"Slot ID : {spellSlotID}");
+
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("Spell Icon UP");
-        Debug.Log($"Slot ID : {spellSlotID}");
+
     }
 
     public void OnEndDrag(PointerEventData eventData)

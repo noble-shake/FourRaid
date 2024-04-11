@@ -138,17 +138,6 @@ public class PlayerWarrior: PlayerScript
             isPlayerDragToMove = true;
             IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(true);
         }
-
-        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //RaycastHit2D[] hit = Physics2D.GetRayIntersectionAll(ray);
-        //if (hit.Length > 0)
-        //{
-        //    int count = hit.Length;
-        //    for (int iNum = 0; iNum < count; ++iNum)
-        //    {
-        //        Debug.Log(hit[iNum].transform.name);
-        //    }
-        //}
     
 
     }
@@ -188,8 +177,6 @@ public class PlayerWarrior: PlayerScript
         }
 
         isPlayerDownMouse = false;
-
-        // indicator process
     }
 
     private void OnMouseExit()
