@@ -45,12 +45,12 @@ public class PlayerScript : MonoBehaviour
     [Header("Target")]
     [SerializeField] protected GameObject EnemyObject;
 
-    public SpellScript overrideSpell(SpellScript _input) {
-        // _input = _input.GetComponent<SpellWarrior1>();
+    //public SpellScript overrideSpell(SpellScript _input) {
+    //    // _input = _input.GetComponent<SpellWarrior1>();
 
-        //return GetComponent("SpellWarrior1");
-        return _input.GetComponent<SpellWarrior1>();
-    }
+    //    //return GetComponent("SpellWarrior1");
+    //    return _input.GetComponent<SpellWarrior1>();
+    //}
 
 
     public void HPBarUIVisbile() {
@@ -145,6 +145,17 @@ public class PlayerScript : MonoBehaviour
         playerAtk = _value;
     }
 
+
+    public GameObject getIndicator() {
+        return IndicatorPlayer;
+    }
+
+    public LineRenderer getIndicatorLine()
+    {
+        return IndicatorLine;
+    }
+
+
     public IEnumerator cor()
     {
         while (true)
@@ -152,5 +163,16 @@ public class PlayerScript : MonoBehaviour
             Debug.Log("Test");
             yield return null;
         }
+    }
+
+    public virtual void NonTargettingSpellActivate(int _num, Vector3 _targetPos= new Vector3()) {
+        
+        
+    }
+
+    public virtual void TargettingSpellActivate(int _num, GameObject _targetObject= null)
+    {
+
+
     }
 }

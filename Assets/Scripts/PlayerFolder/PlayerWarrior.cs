@@ -14,12 +14,14 @@ public class PlayerWarrior: PlayerScript
 
     [Header("Hit Collider")]
     [SerializeField] BoxCollider2D AttackCollider;
-    [SerializeField] bool AttackOn;
+    [SerializeField] BoxCollider2D DetectCollider;
+    [SerializeField] bool AttackRangedOn;
 
     // UNITY CYCLE
     private void Awake()
     {
-        AttackCollider = transform.GetChild(1).GetComponent<BoxCollider2D>();
+        DetectCollider = transform.GetChild(1).GetComponent<BoxCollider2D>();
+        AttackCollider = transform.GetChild(2).GetComponent<BoxCollider2D>();
         playerCurHp = playerMaxHp;
         HPBarUI.maxValue = playerMaxHp;
         HPBarUI.value = playerMaxHp;
@@ -32,21 +34,24 @@ public class PlayerWarrior: PlayerScript
     }
     void Update()
     {
+        InteractTime += Time.fixedDeltaTime;
+
         HPBarUIVisbile();
         playerMove();
+        playerAttack();
+
+
+        // except Infinity
+        if (InteractTime > 10f)
+        {
+            InteractTime = 0f;
+        }
 
     }
 
     private void FixedUpdate()
     {
-        InteractTime += Time.fixedDeltaTime;
-        playerAttack();
 
-
-        // except Infinity
-        if (InteractTime > 10f) {
-            InteractTime = 0f;
-        }
     }
 
     // MAIN SCRIPT
@@ -54,7 +59,7 @@ public class PlayerWarrior: PlayerScript
     private void playerMove() {
         if (!isCommandedMove) return;
 
-        if (AttackOn) return;
+        if (AttackRangedOn) return;
 
         Vector3 convertedPos = MovePos;
         if (!isCommandedAttack) 
@@ -83,14 +88,37 @@ public class PlayerWarrior: PlayerScript
     }
 
     private void playerAttack() {
-        if (!AttackOn) return;
+        if (!AttackRangedOn) return;
 
         if (EnemyObject == null) return;
 
+
+
+        bool AttackOn = false;
+
+        Vector3 EnemyPos = EnemyObject.transform.position;
+        if (Mathf.Abs(MovePos.x - transform.position.x) < 2f || Mathf.Abs(MovePos.y - transform.position.y) > 3f)
+        {
+            Vector3 tempLeftPos = EnemyPos;
+            tempLeftPos.x = tempLeftPos.x - 3f;
+            Vector3 tempRightPos = EnemyPos;
+            tempRightPos.x = tempRightPos.x + 3f;
+            Vector3 tempPos = Vector3.Distance(tempLeftPos, transform.position) < Vector3.Distance(tempRightPos, transform.position) ? tempLeftPos : tempRightPos;
+
+            transform.position = Vector3.MoveTowards(transform.position, tempPos, speed * Time.deltaTime);
+        }
+        else {
+            AttackOn = true;
+        }
+
         if (InteractTime < playerAtkSpeed) return;
 
-        EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, playerAtk);
-        InteractTime = 0f;
+        if (AttackOn) {
+            EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, playerAtk);
+            InteractTime = 0f;
+        }
+
+
     }
 
     public virtual void commandMove(Vector3 _pos) {
@@ -98,10 +126,10 @@ public class PlayerWarrior: PlayerScript
         MovePos = _pos;
     }
 
-    public override void commandAttack() {
-        // isAttackPlaying = true;
-        Debug.Log("Attack On?");
-    }
+    //public override void commandAttack(GameObject _enemy) {
+    //    // isAttackPlaying = true;
+    //    Debug.Log("Attack On?");
+    //}
 
     public override void commandSpell(int _value) { }
 
@@ -109,7 +137,6 @@ public class PlayerWarrior: PlayerScript
     private void OnMouseEnter()
     {
         isPlayerOnMouse = true;
-        Debug.Log("isPlayerOnMous");
     }
 
     private void OnMouseDrag()
@@ -154,7 +181,7 @@ public class PlayerWarrior: PlayerScript
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             RaycastHit2D[] hit = Physics2D.GetRayIntersectionAll(ray);
-            AttackOn = false;
+            AttackRangedOn = false;
 
             if (hit != null) {
                 foreach (RaycastHit2D target in hit) {
@@ -162,7 +189,7 @@ public class PlayerWarrior: PlayerScript
                     {
                         Debug.Log("Enemy Attack?");
                         isCommandedAttack = true;
-                        if (!AttackOn)
+                        if (!AttackRangedOn)
                         {
                             commandMove(target.collider.transform.position);
                         }
@@ -194,7 +221,7 @@ public class PlayerWarrior: PlayerScript
                 {
                     Debug.Log("Attack On!!");
                     EnemyObject = collision.gameObject;
-                    AttackOn = true;
+                    AttackRangedOn = true;
                 }
                 break;
         }
@@ -212,5 +239,36 @@ public class PlayerWarrior: PlayerScript
                 break;
         }
 
+    }
+
+    public override void NonTargettingSpellActivate(int _num, Vector3 _targetPos = new Vector3())
+    {
+        // Instantiate or rush
+
+    }
+
+    public override void TargettingSpellActivate(int _num, GameObject _targetObject = null)
+    {
+        EnemyObject = _targetObject;
+        // commandAttack(EnemyObject);
+
+    }
+
+    public void Spell1() { 
+        // Targetting Spell : Smash
+
+        
+    }
+
+    public void Spell2() { 
+    
+    }
+
+    public void Spell3() { 
+    
+    }
+
+    public void Spell4() { 
+        
     }
 }

@@ -5,6 +5,15 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using static UnityEngine.GraphicsBuffer;
 
+[System.Serializable]
+public enum SpellType
+{
+    SpellTargetting,
+    SpellNonTargetting,
+    SpellActive,
+    SpellNonActive,
+};
+
 public class PlayerManager : MonoBehaviour
 {
     // Todo
@@ -30,6 +39,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] bool isPlayerOnMouse;
     [SerializeField] bool isPlayerDragToMove;
     [SerializeField] bool isPlayerOffMouse;
+    [SerializeField] bool isSpellActivated;
 
     [Header("Player Control")]
     // [SerializeField] RaycastHit2D hit;
@@ -65,7 +75,7 @@ public class PlayerManager : MonoBehaviour
         SpellScript[] rangeData = spellUI.transform.GetComponentsInChildren<SpellScript>(true);
         spells.AddRange(rangeData);
         //spells.RemoveAt(0);
-        spellDeActive();
+        spellUIDeActive();
     }
 
     void Update()
@@ -111,20 +121,20 @@ public class PlayerManager : MonoBehaviour
                     selectedPlayer = target.collider.gameObject;
                     selectedPlayer.GetComponent<PlayerScript>().playerSelect();
                     isPlayerCheck = true;
-                    spellActive();
+                    spellUIActive();
 
                     break;
                 }
             }
 
             // Unity Select Off
-            if (!isPlayerExist && isPlayerCheck) 
+            if (!isPlayerExist && isPlayerCheck && !isSpellActivated) 
             {
                 foreach (RaycastHit2D target in hits)
                 {
                     if (target.collider.CompareTag("ground"))
                     {
-                        spellDeActive();
+                        spellUIDeActive();
                         if (selectedPlayer != null)
                         {
                             selectedPlayer.GetComponent<PlayerScript>().playerSelectCancel();
@@ -139,7 +149,7 @@ public class PlayerManager : MonoBehaviour
     }
 
 
-    private void spellDeActive() 
+    private void spellUIDeActive() 
     {
         foreach (SpellScript target in spells) 
         { 
@@ -147,7 +157,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    private void spellActive()
+    private void spellUIActive()
     {
         Sprite[] Icons = selectedPlayer.GetComponent<PlayerScript>().getSpellIcon();
 
@@ -155,12 +165,23 @@ public class PlayerManager : MonoBehaviour
             spells[inum].gameObject.SetActive(true);
             spells[inum].gameObject.GetComponent<SpellScript>().setIconSprite(Icons[inum]);
             spells[inum].gameObject.GetComponent<SpellScript>().setPlayerPrivilage(selectedPlayer);
-            spells[inum] = selectedPlayer.GetComponent<PlayerScript>().overrideSpell(spells[inum]);
-            PlayerScript sc = selectedPlayer.GetComponent<PlayerScript>();
+            // spells[inum].gameObject.GetComponent<SpellScript>().setPlayerPrivilage(selectedPlayer);
 
-            StartCoroutine(sc.cor());
+            // spells[inum] = selectedPlayer.GetComponent<PlayerScript>().overrideSpell(spells[inum]);
+            //PlayerScript sc = selectedPlayer.GetComponent<PlayerScript>();
+
+            //StartCoroutine(sc.cor());
             
         }
 
+    }
+
+    public void spellActivating() {
+        isSpellActivated = true;
+    }
+
+    public void spellDeActivating()
+    {
+        isSpellActivated = false;
     }
 }
