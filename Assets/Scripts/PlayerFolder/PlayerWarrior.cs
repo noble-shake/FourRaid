@@ -13,15 +13,13 @@ public class PlayerWarrior: PlayerScript
     float InteractTime = 0f;
 
     [Header("Hit Collider")]
-    [SerializeField] BoxCollider2D AttackCollider;
     [SerializeField] BoxCollider2D DetectCollider;
     [SerializeField] bool AttackRangedOn;
 
     // UNITY CYCLE
     private void Awake()
     {
-        DetectCollider = transform.GetChild(1).GetComponent<BoxCollider2D>();
-        AttackCollider = transform.GetChild(2).GetComponent<BoxCollider2D>();
+        DetectCollider = transform.GetChild(2).GetComponent<BoxCollider2D>();
         playerCurHp = playerMaxHp;
         HPBarUI.maxValue = playerMaxHp;
         HPBarUI.value = playerMaxHp;
@@ -32,7 +30,7 @@ public class PlayerWarrior: PlayerScript
     {
 
     }
-    void Update()
+    void FixedUpdate()
     {
         InteractTime += Time.fixedDeltaTime;
 
@@ -49,10 +47,6 @@ public class PlayerWarrior: PlayerScript
 
     }
 
-    private void FixedUpdate()
-    {
-
-    }
 
     // MAIN SCRIPT
 
@@ -69,13 +63,12 @@ public class PlayerWarrior: PlayerScript
             convertedPos.z = transform.position.z;
         }
 
-        if (Vector3.Distance(convertedPos, transform.position) < 0.001f)
+        if (Vector2.Distance(convertedPos, transform.position) < 0.001f)
         {
-            isCommandedMove = false;
             return;
         }
 
-        transform.position = Vector3.MoveTowards(transform.position, convertedPos, speed * Time.deltaTime);
+        transform.position = Vector2.MoveTowards(transform.position, convertedPos, speed * Time.deltaTime);
 
         if (convertedPos.x != transform.position.x)
         {
@@ -96,16 +89,16 @@ public class PlayerWarrior: PlayerScript
 
         bool AttackOn = false;
 
-        Vector3 EnemyPos = EnemyObject.transform.position;
-        if (Mathf.Abs(MovePos.x - transform.position.x) < 2f || Mathf.Abs(MovePos.y - transform.position.y) > 3f)
+        Vector2 EnemyPos = EnemyObject.transform.position;
+        if (Mathf.Abs(MovePos.x - transform.position.x) < 2f || Mathf.Abs(MovePos.y - transform.position.y) > 1f)
         {
-            Vector3 tempLeftPos = EnemyPos;
+            Vector2 tempLeftPos = EnemyPos;
             tempLeftPos.x = tempLeftPos.x - 3f;
-            Vector3 tempRightPos = EnemyPos;
+            Vector2 tempRightPos = EnemyPos;
             tempRightPos.x = tempRightPos.x + 3f;
-            Vector3 tempPos = Vector3.Distance(tempLeftPos, transform.position) < Vector3.Distance(tempRightPos, transform.position) ? tempLeftPos : tempRightPos;
+            Vector2 tempPos = Vector2.Distance(tempLeftPos, transform.position) < Vector2.Distance(tempRightPos, transform.position) ? tempLeftPos : tempRightPos;
 
-            transform.position = Vector3.MoveTowards(transform.position, tempPos, speed * Time.deltaTime);
+            transform.position = Vector2.MoveTowards(transform.position, tempPos, speed * Time.deltaTime);
         }
         else {
             AttackOn = true;
@@ -134,12 +127,12 @@ public class PlayerWarrior: PlayerScript
     public override void commandSpell(int _value) { }
 
 
-    private void OnMouseEnter()
+    public override void PlayerMouseEnter()
     {
         isPlayerOnMouse = true;
     }
 
-    private void OnMouseDrag()
+    public override void PlayerMouseDrag()
     {
         // indicator process
 
@@ -157,7 +150,7 @@ public class PlayerWarrior: PlayerScript
         }
     }
 
-    private void OnMouseDown()
+    public override void PlayerMouseDown()
     {
         if (isClicked)
         {
@@ -165,11 +158,9 @@ public class PlayerWarrior: PlayerScript
             isPlayerDragToMove = true;
             IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(true);
         }
-    
-
     }
 
-    private void OnMouseUp()
+    public override void PlayerMouseUp()
     {
         if (isClicked && isPlayerDragToMove && isPlayerDownMouse)
         {
@@ -193,6 +184,9 @@ public class PlayerWarrior: PlayerScript
                         {
                             commandMove(target.collider.transform.position);
                         }
+                        else {
+                            playerAttack();
+                        }
                     }
                 }
 
@@ -206,20 +200,34 @@ public class PlayerWarrior: PlayerScript
         isPlayerDownMouse = false;
     }
 
-    private void OnMouseExit()
+    public override void PlayerMouseExit()
     {
         isPlayerOnMouse = false;
     }
 
+    public override void AttackTriggerStay(HitBoxScript.enumHitType _hitType, Collider2D collision)
+    {
+        switch (_hitType)
+        {
+            case HitBoxScript.enumHitType.EnemyCheck:
+                if (isCommandedAttack && collision.CompareTag("enemy")) {
+                    EnemyObject = collision.gameObject;
+                    AttackRangedOn = true;
+                    
+                }
+                break;
 
-    public void AttackTriggerEnter(PlayerHitBox.enumHitType _hitType, Collider2D collision)
+        }
+    }
+
+
+    public override void AttackTriggerEnter(HitBoxScript.enumHitType _hitType, Collider2D collision)
     {
         switch (_hitType) 
         {
-            case PlayerHitBox.enumHitType.EnemyCheck:
+            case HitBoxScript.enumHitType.EnemyCheck:
                 if (isCommandedAttack && collision.CompareTag("enemy"))
                 {
-                    Debug.Log("Attack On!!");
                     EnemyObject = collision.gameObject;
                     AttackRangedOn = true;
                 }
@@ -227,14 +235,14 @@ public class PlayerWarrior: PlayerScript
         }
     }
 
-    public void AttackTriggerExit(PlayerHitBox.enumHitType _hitType, Collider2D collision)
+    public override void AttackTriggerExit(HitBoxScript.enumHitType _hitType, Collider2D collision)
     {
         switch (_hitType)
         {
-            case PlayerHitBox.enumHitType.EnemyCheck:
+            case HitBoxScript.enumHitType.EnemyCheck:
                 if (isCommandedAttack) 
                 {
-                    commandMove(collision.transform.position);
+                    playerAttack();
                 }
                 break;
         }

@@ -111,14 +111,14 @@ public class PlayerManager : MonoBehaviour
                 {
                     isPlayerExist = true;
                     
-                    if (selectedPlayer != null && selectedPlayer != target.collider.gameObject)
+                    if (selectedPlayer != null && selectedPlayer != target.collider.transform.parent.gameObject)
                     {
                         selectedPlayer.GetComponent<PlayerScript>().playerSelectCancel();
                         selectedPlayer = null;
                         isPlayerCheck = false;
                     }
                    
-                    selectedPlayer = target.collider.gameObject;
+                    selectedPlayer = target.collider.transform.parent.gameObject;
                     selectedPlayer.GetComponent<PlayerScript>().playerSelect();
                     isPlayerCheck = true;
                     spellUIActive();

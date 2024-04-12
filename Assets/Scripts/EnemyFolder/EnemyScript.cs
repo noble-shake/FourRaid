@@ -10,6 +10,7 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] protected float enemyMaxHp;
     [SerializeField] protected float enemyCurHp;
     [SerializeField] protected float enemyAtk;
+    [SerializeField] protected float enemyAtkSpeed;
     [SerializeField] protected float enemyForce;
     [SerializeField] protected GameObject enemyAggroTarget;
     [SerializeField] protected int enemyAggroTargetID;
@@ -21,13 +22,13 @@ public class EnemyScript : MonoBehaviour
     [Header("Enemy Check")]
     [SerializeField] protected bool isClicked;
     [SerializeField] protected bool isPlayerOnMouse;
-    [SerializeField] protected bool AttackOn;
+    [SerializeField] protected bool AttackRangedOn;
 
     [Header("UI Inspector")]
     [SerializeField] protected Slider HPBarUI;
 
-    [Header("Target")]
-    [SerializeField] protected GameObject EnemyObject;
+    [Header("External")]
+    [SerializeField] protected float InteractTime;
 
 
     public void HPBarUIVisbile()
@@ -102,4 +103,19 @@ public class EnemyScript : MonoBehaviour
             HPBarUI.value = enemyCurHp;
         }
     }
+
+    public virtual void AttackTriggerStay(HitBoxScript.enumHitType _hitType, Collider2D collision)
+    {
+    }
+
+    public virtual void AttackTriggerEnter(HitBoxScript.enumHitType _hitType, Collider2D collision)
+    {
+    }
+
+    public virtual void AttackTriggerExit(HitBoxScript.enumHitType _hitType, Collider2D collision)
+    {
+
+
+    }
+
 }

@@ -175,4 +175,42 @@ public class PlayerScript : MonoBehaviour
 
 
     }
+
+    public virtual void AttackTriggerStay(HitBoxScript.enumHitType _hitType, Collider2D collision)
+    {
+    }
+
+    public virtual void AttackTriggerEnter(HitBoxScript.enumHitType _hitType, Collider2D collision)
+    {
+    }
+
+    public virtual void AttackTriggerExit(HitBoxScript.enumHitType _hitType, Collider2D collision) 
+    { 
+    
+
+    }
+
+    public virtual void PlayerMouseEnter() { 
+        
+    }
+
+    public virtual void PlayerMouseDown()
+    {
+
+    }
+
+    public virtual void PlayerMouseUp()
+    {
+
+    }
+
+    public virtual void PlayerMouseDrag()
+    {
+
+    }
+
+    public virtual void PlayerMouseExit()
+    {
+
+    }
 }
