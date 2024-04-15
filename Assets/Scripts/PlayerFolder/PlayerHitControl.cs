@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerHitControl : MonoBehaviour
 {
     [Header("Player Info")]
-    [SerializeField] PlayerScript player 
+    [SerializeField] PlayerScript player;
 
     private void OnMouseEnter()
     {
@@ -14,22 +14,22 @@ public class PlayerHitControl : MonoBehaviour
 
     private void OnMouseDown()
     {
-        
+        player.PlayerMouseDown();
     }
 
     private void OnMouseUp()
     {
-        
+        player.PlayerMouseUp();
     }
 
     private void OnMouseDrag()
     {
-        
+        player.PlayerMouseDrag();
     }
 
     private void OnMouseExit()
     {
-        
+        player.PlayerMouseExit();
     }
 
 }

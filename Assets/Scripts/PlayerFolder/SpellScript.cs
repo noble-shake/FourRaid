@@ -27,6 +27,8 @@ public class SpellScript: MonoBehaviour
     [SerializeField] float cooltime;
     [SerializeField] float currenmt_cooltime;
     [SerializeField] Button btnSpell;
+    [SerializeField] GameObject battleGround;
+    [SerializeField] Color battleGroundColor;
 
     public void SpellInit(SpellInfo _info) {
         spellSlotID = _info.spellSlotID;
@@ -38,7 +40,7 @@ public class SpellScript: MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        battleGroundColor = battleGround.GetComponent<SpriteRenderer>().color;
         IconImage = transform.GetChild(0).GetComponent<Image>();
         IconImage.fillAmount = cooltime;
     }
@@ -99,8 +101,9 @@ public class SpellScript: MonoBehaviour
         IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(true);
         IndicatorLine.positionCount = 2;
         bool isCanceled = true;
-        while (true) {
 
+        while (true) {
+            battleGround.GetComponent<SpriteRenderer>().color = new Color(30f, 30f, 30f, 255f);
 
             Vector3 IndicatorPos = IndicatorPlayer.transform.GetChild(1).transform.position;
 
@@ -136,6 +139,7 @@ public class SpellScript: MonoBehaviour
                 break;
             }
 
+            battleGround.GetComponent<SpriteRenderer>().color = battleGroundColor;
             yield return null;
         }
         IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(false);

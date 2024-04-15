@@ -10,7 +10,8 @@ using UnityEngine.UIElements;
 
 public class PlayerWarrior: PlayerScript
 {
-    float InteractTime = 0f;
+    float AttackTime = 0f;
+    float Spell1ChargingTime = 0f;
 
     [Header("Hit Collider")]
     [SerializeField] BoxCollider2D DetectCollider;
@@ -30,20 +31,54 @@ public class PlayerWarrior: PlayerScript
     {
 
     }
-    void FixedUpdate()
-    {
-        InteractTime += Time.fixedDeltaTime;
 
-        HPBarUIVisbile();
-        playerMove();
-        playerAttack();
-
+    void TimeFlowing() {
+        AttackTime += Time.fixedDeltaTime;
+        Spell1ChargingTime -= Time.fixedDeltaTime;
 
         // except Infinity
-        if (InteractTime > 10f)
+        if (AttackTime > 10f)
         {
-            InteractTime = 0f;
+            AttackTime = 0f;
         }
+
+        if (Spell1ChargingTime < 0f) {
+            Spell1ChargingTime = 0f;
+        }
+
+    }
+
+    void FixedUpdate()
+    {
+        TimeFlowing();
+
+        HPBarUIVisbile();
+        if (isSpellPlaying)
+        {
+            switch (ActivatedSpell) {
+                case 0:
+                    Spell1();
+                    break;
+                case 1:
+                    Spell2();
+                    break;
+                case 2:
+                    Spell3();
+                    break;
+                case 3:
+                    Spell4();
+                    break;
+                case -1:
+                    isSpellPlaying = false;
+                    break;
+            }
+        }
+        else {
+            playerMove();
+            playerAttack();
+        }
+
+
 
     }
 
@@ -85,8 +120,6 @@ public class PlayerWarrior: PlayerScript
 
         if (EnemyObject == null) return;
 
-
-
         bool AttackOn = false;
 
         Vector2 EnemyPos = EnemyObject.transform.position;
@@ -104,11 +137,11 @@ public class PlayerWarrior: PlayerScript
             AttackOn = true;
         }
 
-        if (InteractTime < playerAtkSpeed) return;
+        if (AttackTime < playerAtkSpeed) return;
 
         if (AttackOn) {
             EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, playerAtk);
-            InteractTime = 0f;
+            AttackTime = 0f;
         }
 
 
@@ -257,15 +290,57 @@ public class PlayerWarrior: PlayerScript
 
     public override void TargettingSpellActivate(int _num, GameObject _targetObject = null)
     {
+        isSpellPlaying = true;
+        ActivatedSpell = _num;
         EnemyObject = _targetObject;
+
+        if (_num == 0) {
+            Spell1ChargingTime = 1f;
+        }
+
         // commandAttack(EnemyObject);
+
 
     }
 
-    public void Spell1() { 
-        // Targetting Spell : Smash
+    public void Spell1() {
+        // Targetting Spell : Jump Attack
+
+        // animation
+
+        if (Spell1ChargingTime > 0f) return;
+
+        Vector2 tempPos = EnemyObject.transform.position;
+        Vector2 tempLeftPos = tempPos;
+        Vector2 tempRightPos = tempPos;
+        tempLeftPos.x -= 3f;
+        tempRightPos.x += 3f;
+
+        Vector2 TargetPos = Vector2.Distance(transform.position, tempLeftPos) > Vector2.Distance(transform.position, tempRightPos) ? tempRightPos : tempLeftPos;
+
+        float dist = Vector2.Distance(transform.position, TargetPos);
+        // get Bazier point
+        float x = Mathf.Cos(30) * dist;
+        float y = Mathf.Sin(45) * dist;
+
+        Vector2 midPoint = Vector2.zero;
+        if (transform.position.x > TargetPos.x) {
+            midPoint.x = TargetPos.x - x;
+            midPoint.x = TargetPos.y + y;
+        }
+        else
+        {
+            midPoint.x = TargetPos.x + x;
+            midPoint.x = TargetPos.y + y;
+        }
+
+        Vector2 p4 = Vector2.Lerp(transform.position, midPoint, Time.deltaTime);
+        Vector2 p5 = Vector2.Lerp(midPoint, TargetPos, Time.deltaTime);
+        transform.position = Vector3.Lerp(p4, p5, Time.deltaTime);
 
         
+
+
     }
 
     public void Spell2() { 

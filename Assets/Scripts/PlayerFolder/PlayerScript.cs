@@ -34,11 +34,12 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] protected bool isCommandedAttack;
     [SerializeField] protected bool isMoveDone;
     [SerializeField] protected bool isAttackPlaying;
+    [SerializeField] protected bool isSpellPlaying;
 
     [Header("UI Inspector")]
     [SerializeField] protected Image Indicator;
     [SerializeField] protected Sprite[] SpellIcon;
-    [SerializeField] protected SpellScript[] OverridingSpells;
+    [SerializeField] protected int ActivatedSpell;
     [SerializeField] protected float[] SpellAggro;
     [SerializeField] protected Slider HPBarUI;
 

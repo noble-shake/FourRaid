@@ -213,6 +213,9 @@ MonoBehaviour:
   IconImage: {fileID: 8015694479204382335}
   cooltime: 0
   currenmt_cooltime: 0
+  btnSpell: {fileID: 0}
+  battleGround: {fileID: 6552659599060049883, guid: 17d77953c74ec514f8d95e79fff55020, type: 3}
+  battleGroundColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &502992300581894155
 MonoBehaviour:
   m_ObjectHideFlags: 0
