@@ -15,7 +15,8 @@ public class EnemyGoblin : EnemyScript
         enemyCurHp = enemyMaxHp;
         HPBarUI.maxValue = enemyMaxHp;
         HPBarUI.value = enemyMaxHp;
-        enemyAggroGauge = new float[] { 0, 0, 0, 0 };
+        // enemyAggroGauge = new float[] { 0, 0, 0, 0 };
+        enemyAggroGauge = new float[] { 0, 0 };
     }
 
 
@@ -56,8 +57,8 @@ public class EnemyGoblin : EnemyScript
     }
     protected override void Move()
     {
-        minNeighborhood();
-        enemyAggroTarget = Heroes[enemyAggroTargetID];
+        TargetChangeCheck();
+        // enemyAggroTarget = Heroes[enemyAggroTargetID];
 
         // Vector3 TargetPos = enemyAggroTarget.transform.GetChild(1).transform.position;
         Vector3 TargetPos = enemyAggroTarget.transform.position;
@@ -75,28 +76,6 @@ public class EnemyGoblin : EnemyScript
             transform.GetChild(0).localScale = looking;
             transform.GetChild(1).localScale = looking;
         }
-
-    }
-
-    private void minNeighborhood() {
-
-        int TargetID = 0;
-        float minDist = Mathf.Infinity;
-        bool PlayerAliveCheck = false;
-
-        for (int i = 0; i < Heroes.Count; i++)
-        {
-            PlayerAliveCheck = Heroes[i].GetComponent<PlayerScript>().getPlayerAlive();
-            float dist = Vector2.Distance(Heroes[i].transform.position, transform.position);
-            if (minDist < dist && PlayerAliveCheck)
-            {
-                minDist = dist;
-                TargetID = i;
-            }
-        }
-
-        enemyAggroTargetID = TargetID;
-
 
     }
 
@@ -133,7 +112,7 @@ public class EnemyGoblin : EnemyScript
                 if (collision.CompareTag("player"))
                 {
                     Debug.Log("Attack On!!");
-                    enemyAggroTarget = collision.gameObject;
+                    TargetChangeCheck();
                     AttackRangedOn = true;
                 }
                 break;
@@ -148,7 +127,7 @@ public class EnemyGoblin : EnemyScript
                 if (collision.CompareTag("player"))
                 {
                     Debug.Log("Attack On!!");
-                    enemyAggroTarget = collision.gameObject;
+                    TargetChangeCheck();
                     AttackRangedOn = true;
                 }
                 break;

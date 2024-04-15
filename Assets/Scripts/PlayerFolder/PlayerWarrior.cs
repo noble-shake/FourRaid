@@ -12,6 +12,9 @@ public class PlayerWarrior: PlayerScript
 {
     float AttackTime = 0f;
     float Spell1ChargingTime = 0f;
+    // [SerializeField] float playerAtkAggro = 50f;
+    [SerializeField] float Spell1Atk = 30f;
+    [SerializeField] float Spell1Aggro = 200f;
 
     [Header("Hit Collider")]
     [SerializeField] BoxCollider2D DetectCollider;
@@ -140,7 +143,7 @@ public class PlayerWarrior: PlayerScript
         if (AttackTime < playerAtkSpeed) return;
 
         if (AttackOn) {
-            EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, playerAtk);
+            EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, playerAtk, playerAtkAggro);
             AttackTime = 0f;
         }
 
@@ -284,7 +287,10 @@ public class PlayerWarrior: PlayerScript
 
     public override void NonTargettingSpellActivate(int _num, Vector3 _targetPos = new Vector3())
     {
-        // Instantiate or rush
+        // Instantiate Shield Attack and move.
+        isSpellPlaying = true;
+        ActivatedSpell = _num;
+        float angle = Vector2.Angle(transform.position, _targetPos);
 
     }
 
@@ -309,6 +315,7 @@ public class PlayerWarrior: PlayerScript
         // animation
 
         if (Spell1ChargingTime > 0f) return;
+        isCommandedMove = false;
 
         Vector2 tempPos = EnemyObject.transform.position;
         Vector2 tempLeftPos = tempPos;
@@ -317,34 +324,48 @@ public class PlayerWarrior: PlayerScript
         tempRightPos.x += 3f;
 
         Vector2 TargetPos = Vector2.Distance(transform.position, tempLeftPos) > Vector2.Distance(transform.position, tempRightPos) ? tempRightPos : tempLeftPos;
-
+        MovePos = TargetPos;
         float dist = Vector2.Distance(transform.position, TargetPos);
         // get Bazier point
-        float x = Mathf.Cos(30) * dist;
-        float y = Mathf.Sin(45) * dist;
+        //float x = Mathf.Cos(30) * dist;
+        //float y = Mathf.Sin(45) * dist;
 
-        Vector2 midPoint = Vector2.zero;
-        if (transform.position.x > TargetPos.x) {
-            midPoint.x = TargetPos.x - x;
-            midPoint.x = TargetPos.y + y;
-        }
-        else
+        //Vector2 midPoint = Vector2.zero;
+        //if (transform.position.x > TargetPos.x) {
+        //    midPoint.x = TargetPos.x - x;
+        //    midPoint.x = TargetPos.y + y;
+        //}
+        //else
+        //{
+        //    midPoint.x = TargetPos.x + x;
+        //    midPoint.x = TargetPos.y + y;
+        //}
+
+        //Vector2 p4 = Vector2.Lerp(transform.position, midPoint, Time.deltaTime);
+        //Vector2 p5 = Vector2.Lerp(midPoint, TargetPos, Time.deltaTime);
+        //transform.position = Vector3.Lerp(p4, p5, Time.deltaTime);
+
+        transform.position = Vector2.MoveTowards(transform.position, TargetPos, Time.deltaTime * 4f);
+
+        if (Vector2.Distance(TargetPos, transform.position) < 0.001f)
         {
-            midPoint.x = TargetPos.x + x;
-            midPoint.x = TargetPos.y + y;
+            EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, Spell1Atk, Spell1Aggro);
+            ActivatedSpell = -1;
+            isSpellPlaying = false;
+            isCommandedAttack = true;
+            isCommandedMove = true;
+            AttackRangedOn = true;
+            playerAttack();
+            return;
         }
-
-        Vector2 p4 = Vector2.Lerp(transform.position, midPoint, Time.deltaTime);
-        Vector2 p5 = Vector2.Lerp(midPoint, TargetPos, Time.deltaTime);
-        transform.position = Vector3.Lerp(p4, p5, Time.deltaTime);
-
-        
 
 
     }
 
     public void Spell2() { 
-    
+        // Shield Throw and Move.
+
+
     }
 
     public void Spell3() { 

@@ -28,7 +28,6 @@ public class SpellScript: MonoBehaviour
     [SerializeField] float currenmt_cooltime;
     [SerializeField] Button btnSpell;
     [SerializeField] GameObject battleGround;
-    [SerializeField] Color battleGroundColor;
 
     public void SpellInit(SpellInfo _info) {
         spellSlotID = _info.spellSlotID;
@@ -40,7 +39,6 @@ public class SpellScript: MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        battleGroundColor = battleGround.GetComponent<SpriteRenderer>().color;
         IconImage = transform.GetChild(0).GetComponent<Image>();
         IconImage.fillAmount = cooltime;
     }
@@ -90,6 +88,60 @@ public class SpellScript: MonoBehaviour
         PlayerManager.instance.spellDeActivating();
     }
 
+    IEnumerator SpellNonTargettingReady() {
+        Time.timeScale = 0.5f;
+        PlayerManager.instance.spellActivating();
+        yield return null;
+        Debug.Log("before click");
+        GameObject IndicatorPlayer = privilegedPlayer.GetComponent<PlayerScript>().getIndicator();
+        LineRenderer IndicatorLine = privilegedPlayer.GetComponent<PlayerScript>().getIndicatorLine();
+        IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(true);
+        IndicatorLine.positionCount = 2;
+        bool isCanceled = true;
+
+        while (true)
+        {
+            battleGround.GetComponent<SpriteRenderer>().color = new Color(30f, 30f, 30f, 255f);
+
+            Vector3 IndicatorPos = IndicatorPlayer.transform.GetChild(1).transform.position;
+
+            Vector3 TargetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            TargetPos.z = 0f;
+
+            Vector3[] vector2s = new Vector3[2] { IndicatorPos, TargetPos };
+            IndicatorLine.SetPositions(vector2s);
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                Vector2 convertedPos = TargetPos;
+                
+                privilegedPlayer.GetComponent<PlayerScript>().NonTargettingSpellActivate(spellSlotID, convertedPos);
+                isCanceled = false;
+                break;
+            }
+            else if (Input.GetMouseButtonDown(1))
+            {
+                isCanceled = true;
+                // yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
+                break;
+            }
+
+            battleGround.GetComponent<SpriteRenderer>().color = new Color(176f, 176f, 176f, 255f);
+            yield return null;
+        }
+        IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(false);
+        Debug.Log("after click");
+        PlayerManager.instance.spellDeActivating();
+
+        Debug.Log("spell Activated");
+        if (!isCanceled)
+        {
+            currenmt_cooltime = cooltime;
+        }
+
+        Time.timeScale = 1f;
+    }
+
     IEnumerator SpellTargettingReady()
     {
         Time.timeScale = 0.5f;
@@ -109,9 +161,6 @@ public class SpellScript: MonoBehaviour
 
             Vector3 TargetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             TargetPos.z = 0f;
-            Vector3 ConvertedIndicator = Camera.main.WorldToScreenPoint(IndicatorPos);
-
-
             
             Vector3[] vector2s = new Vector3[2] { IndicatorPos, TargetPos };
             IndicatorLine.SetPositions(vector2s);
@@ -127,9 +176,6 @@ public class SpellScript: MonoBehaviour
                         privilegedPlayer.GetComponent<PlayerScript>().TargettingSpellActivate(spellSlotID, hit[inum].collider.gameObject);
                     }
                 }
-
-
-                
                 break;
             } 
             else if(Input.GetMouseButtonDown(1)) 
@@ -139,14 +185,12 @@ public class SpellScript: MonoBehaviour
                 break;
             }
 
-            battleGround.GetComponent<SpriteRenderer>().color = battleGroundColor;
+            battleGround.GetComponent<SpriteRenderer>().color = new Color(176f, 176f, 176f, 255f);
             yield return null;
         }
         IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(false);
-        Debug.Log("after click");
         PlayerManager.instance.spellDeActivating();
 
-        Debug.Log("spell Activated");
         if (!isCanceled) {
             currenmt_cooltime = cooltime;
         }

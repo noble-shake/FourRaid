@@ -59,22 +59,37 @@ public class EnemyScript : MonoBehaviour
         enemyAggroGauge[_playerID] += _value;
     }
 
-    protected virtual void TargetChangeCheck() {
-        
+    public void TargetChangeCheck() {
+
         int maxOrder = 0;
-        float temp = 0;
-        for(int i = 0; i < enemyAggroGauge.Length; i++)
+        float temp = -1;
+        for(int i = 0; i < Heroes.Count; i++)
         {
-            if (temp < enemyAggroGauge[i]) {
+            bool PlayerAliveCheck = false;
+            PlayerAliveCheck = Heroes[i].GetComponent<PlayerScript>().getPlayerAlive();
+            if (temp < enemyAggroGauge[i] && PlayerAliveCheck) {
                 temp = enemyAggroGauge[i];
                 maxOrder = i;
             }
 
         }
+
+        //    for (int i = 0; i < Heroes.Count; i++)
+        //    {
+        //        PlayerAliveCheck = Heroes[i].GetComponent<PlayerScript>().getPlayerAlive();
+        //        float aggro = ;
+        //        if (MaxAggro > aggro && PlayerAliveCheck)
+        //        {
+        //            MaxAggro = aggro;
+        //            TargetID = i;
+        //        }
+        //    }
+
         enemyAggroTargetID = maxOrder;
+        enemyAggroTarget = Heroes[enemyAggroTargetID];
     }
 
-    public void hitHp(int _playerID, float _value)
+    public void hitHp(int _playerID, float _value, float _aggro)
     {
         enemyCurHp -= _value;
         if (enemyCurHp < 0)
@@ -87,7 +102,7 @@ public class EnemyScript : MonoBehaviour
             HPBarUI.value = enemyCurHp;
         }
 
-        AggroCalculate(_playerID, _value);
+        AggroCalculate(_playerID, _aggro);
     }
 
     public void healHp(float _value)
