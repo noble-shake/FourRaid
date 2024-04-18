@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
@@ -12,13 +13,23 @@ public class PlayerWarrior: PlayerScript
 {
     float AttackTime = 0f;
     float Spell1ChargingTime = 0f;
+    float Spell2ChargingTime = 0f;
     // [SerializeField] float playerAtkAggro = 50f;
     [SerializeField] float Spell1Atk = 30f;
     [SerializeField] float Spell1Aggro = 200f;
 
+    [SerializeField] float Spell2Aggro = Mathf.Infinity;
+
+    [SerializeField] float Spell3Atk = 30f;
+    [SerializeField] float Spell3Aggro = 200f;
+    [SerializeField] float ThorwAngle = 0f;
+
     [Header("Hit Collider")]
     [SerializeField] BoxCollider2D DetectCollider;
     [SerializeField] bool AttackRangedOn;
+
+    [SerializeField] GameObject ShieldImage;
+    [SerializeField] GameObject ShieldObject;
 
     // UNITY CYCLE
     private void Awake()
@@ -34,7 +45,6 @@ public class PlayerWarrior: PlayerScript
     {
 
     }
-
     void TimeFlowing() {
         AttackTime += Time.fixedDeltaTime;
         Spell1ChargingTime -= Time.fixedDeltaTime;
@@ -290,8 +300,19 @@ public class PlayerWarrior: PlayerScript
         // Instantiate Shield Attack and move.
         isSpellPlaying = true;
         ActivatedSpell = _num;
-        float angle = Vector2.Angle(transform.position, _targetPos);
+        // float angle = Vector2.Angle(transform.position, _targetPos);
+        float angle = Quaternion.FromToRotation(Vector3.up, transform.position - EnemyObject.transform.position).eulerAngles.z;
 
+        if (_num == 2)
+        {
+            Spell2ChargingTime = 2f;
+            ThorwAngle = angle;
+
+        }
+
+        Vector3 looking = _targetPos.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+        transform.GetChild(0).localScale = looking;
+        transform.GetChild(1).localScale = looking;
     }
 
     public override void TargettingSpellActivate(int _num, GameObject _targetObject = null)
@@ -304,6 +325,7 @@ public class PlayerWarrior: PlayerScript
             Spell1ChargingTime = 1f;
         }
 
+
         // commandAttack(EnemyObject);
 
 
@@ -314,9 +336,12 @@ public class PlayerWarrior: PlayerScript
 
         // animation
 
+
+        // Charging Animation
         if (Spell1ChargingTime > 0f) return;
         isCommandedMove = false;
 
+        // Jump Animation
         Vector2 tempPos = EnemyObject.transform.position;
         Vector2 tempLeftPos = tempPos;
         Vector2 tempRightPos = tempPos;
@@ -326,26 +351,9 @@ public class PlayerWarrior: PlayerScript
         Vector2 TargetPos = Vector2.Distance(transform.position, tempLeftPos) > Vector2.Distance(transform.position, tempRightPos) ? tempRightPos : tempLeftPos;
         MovePos = TargetPos;
         float dist = Vector2.Distance(transform.position, TargetPos);
-        // get Bazier point
-        //float x = Mathf.Cos(30) * dist;
-        //float y = Mathf.Sin(45) * dist;
 
-        //Vector2 midPoint = Vector2.zero;
-        //if (transform.position.x > TargetPos.x) {
-        //    midPoint.x = TargetPos.x - x;
-        //    midPoint.x = TargetPos.y + y;
-        //}
-        //else
-        //{
-        //    midPoint.x = TargetPos.x + x;
-        //    midPoint.x = TargetPos.y + y;
-        //}
 
-        //Vector2 p4 = Vector2.Lerp(transform.position, midPoint, Time.deltaTime);
-        //Vector2 p5 = Vector2.Lerp(midPoint, TargetPos, Time.deltaTime);
-        //transform.position = Vector3.Lerp(p4, p5, Time.deltaTime);
-
-        transform.position = Vector2.MoveTowards(transform.position, TargetPos, Time.deltaTime * 4f);
+        transform.position = Vector2.MoveTowards(transform.position, TargetPos, Time.deltaTime * 16f);
 
         if (Vector2.Distance(TargetPos, transform.position) < 0.001f)
         {
@@ -358,18 +366,35 @@ public class PlayerWarrior: PlayerScript
             playerAttack();
             return;
         }
+    }
+
+    public void Spell2() {
+        // Buff : damage reduce & aggro max
+
+        if (Spell2ChargingTime > 0f) return;
+
+
 
 
     }
 
-    public void Spell2() { 
-        // Shield Throw and Move.
+    public void Spell3() {
+        // Shield Throw and Smite.
+
+        // if (Spell3ChargingTime > 0f) return;
 
 
-    }
+        Debug.Log(ThorwAngle);
+        GameObject objArrow = Instantiate(ShieldObject, transform.position, Quaternion.Euler(new Vector3(0f, 0f, ThorwAngle)));
+        RangedShield shd = objArrow.GetComponent<RangedShield>();
 
-    public void Spell3() { 
-    
+        shd.SetPlayerRangedAttack(playerID, 4f, playerAtk, playerAtkAggro); // ID, speed , dmg, aggro
+
+        // EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, playerAtk, playerAtkAggro);
+        AttackTime = 0f;
+
+
+
     }
 
     public void Spell4() { 

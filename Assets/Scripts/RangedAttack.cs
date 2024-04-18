@@ -14,7 +14,6 @@ public class RangedAttack : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // 중복되어 있는 적기를 하나만 처리하게 바로 효과를 꺼줌.
         if (isHit == true) return;
 
         if (isEnemyAttack == false && collision.CompareTag("enemy"))
@@ -46,7 +45,8 @@ public class RangedAttack : MonoBehaviour
     void Update()
     {
         //transform.position = transform.position + Vector3.up * Time.deltaTime * speed; 
-        transform.position = transform.position + transform.up * Time.deltaTime * speed;
+        //transform.position = transform.position + transform.up * Time.deltaTime * speed;
+        transform.position += -transform.right * Time.deltaTime * speed;
     }
 
     public void SetEnemyAttack(float _speed, float _damege)

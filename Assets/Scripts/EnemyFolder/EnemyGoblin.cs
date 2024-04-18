@@ -53,6 +53,10 @@ public class EnemyGoblin : EnemyScript
             enemyAggroTarget.GetComponent <PlayerScript>().hitHp(enemyAtk);
             InteractTime = 0f;
         }
+
+        Vector3 looking = HeroPos.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+        transform.GetChild(0).localScale = looking;
+        transform.GetChild(1).localScale = looking;
     }
     protected override void Move()
     {
@@ -75,7 +79,6 @@ public class EnemyGoblin : EnemyScript
             transform.GetChild(0).localScale = looking;
             transform.GetChild(1).localScale = looking;
         }
-
     }
 
     private void Awake()

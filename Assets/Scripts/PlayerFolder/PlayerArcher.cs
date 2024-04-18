@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using TMPro;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
@@ -83,8 +84,6 @@ public class PlayerArcher: PlayerScript
             playerAttack();
         }
 
-
-
     }
 
 
@@ -126,11 +125,14 @@ public class PlayerArcher: PlayerScript
         if (EnemyObject == null) return;
 
         Vector2 EnemyPos = EnemyObject.transform.position;
-        float angle = Vector2.Angle(transform.position, EnemyPos);
+        //float angle = Vector2.Angle(transform.position, EnemyPos) - 90.0f; don't use
+
+        // float angle = Quaternion.FromToRotation(Vector3.up, transform.position - EnemyObject.transform.position).eulerAngles.z - 90;
+        float angle = Quaternion.FromToRotation(Vector3.right, transform.position - EnemyObject.transform.position).eulerAngles.z;
 
         if (AttackTime < playerAtkSpeed) return;
 
-
+        Debug.Log(angle);
         GameObject objArrow= Instantiate(Arrow, transform.position, Quaternion.Euler(new Vector3(0f, 0f, angle)));
         RangedAttack arrow = objArrow.GetComponent<RangedAttack>();
 
@@ -138,6 +140,10 @@ public class PlayerArcher: PlayerScript
 
         // EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, playerAtk, playerAtkAggro);
         AttackTime = 0f;
+
+        Vector3 looking = EnemyPos.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+        transform.GetChild(0).localScale = looking;
+        transform.GetChild(1).localScale = looking;
     }
 
     public virtual void commandMove(Vector3 _pos) {

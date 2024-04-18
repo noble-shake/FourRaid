@@ -27,7 +27,7 @@ public class SpellScript: MonoBehaviour
     [SerializeField] float cooltime;
     [SerializeField] float currenmt_cooltime;
     [SerializeField] Button btnSpell;
-    [SerializeField] GameObject battleGround;
+    [SerializeField] Canvas DarkSkin;
 
     public void SpellInit(SpellInfo _info) {
         spellSlotID = _info.spellSlotID;
@@ -88,6 +88,19 @@ public class SpellScript: MonoBehaviour
         PlayerManager.instance.spellDeActivating();
     }
 
+    IEnumerator SpellActiveReady() {
+        Time.timeScale = 0.5f;
+        PlayerManager.instance.spellActivating();
+        yield return null;
+        Debug.Log("Active");
+        DarkSkin.gameObject.SetActive(true);
+
+        // privilegedPlayer.GetComponent<PlayerScript>().NonTargettingSpellActivate(spellSlotID, convertedPos);
+
+        // animator 
+        yield return null;
+    }
+
     IEnumerator SpellNonTargettingReady() {
         Time.timeScale = 0.5f;
         PlayerManager.instance.spellActivating();
@@ -98,10 +111,10 @@ public class SpellScript: MonoBehaviour
         IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(true);
         IndicatorLine.positionCount = 2;
         bool isCanceled = true;
-
+        DarkSkin.gameObject.SetActive(true);
         while (true)
         {
-            battleGround.GetComponent<SpriteRenderer>().color = new Color(30f, 30f, 30f, 255f);
+            
 
             Vector3 IndicatorPos = IndicatorPlayer.transform.GetChild(1).transform.position;
 
@@ -126,9 +139,10 @@ public class SpellScript: MonoBehaviour
                 break;
             }
 
-            battleGround.GetComponent<SpriteRenderer>().color = new Color(176f, 176f, 176f, 255f);
+            
             yield return null;
         }
+        DarkSkin.gameObject.SetActive(false);
         IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(false);
         Debug.Log("after click");
         PlayerManager.instance.spellDeActivating();
@@ -153,9 +167,9 @@ public class SpellScript: MonoBehaviour
         IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(true);
         IndicatorLine.positionCount = 2;
         bool isCanceled = true;
-
+        DarkSkin.gameObject.SetActive(true);
         while (true) {
-            battleGround.GetComponent<SpriteRenderer>().color = new Color(30f, 30f, 30f, 255f);
+            
 
             Vector3 IndicatorPos = IndicatorPlayer.transform.GetChild(1).transform.position;
 
@@ -185,9 +199,10 @@ public class SpellScript: MonoBehaviour
                 break;
             }
 
-            battleGround.GetComponent<SpriteRenderer>().color = new Color(176f, 176f, 176f, 255f);
+            
             yield return null;
         }
+        DarkSkin.gameObject.SetActive(false);
         IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(false);
         PlayerManager.instance.spellDeActivating();
 

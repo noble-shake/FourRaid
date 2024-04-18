@@ -166,6 +166,15 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    public virtual void ActiveSpellActivate(int _num) { 
+        
+    }
+
+    public virtual void NonActiveSpellActivate(int _num)
+    {
+
+    }
+
     public virtual void NonTargettingSpellActivate(int _num, Vector3 _targetPos= new Vector3()) {
         
         
