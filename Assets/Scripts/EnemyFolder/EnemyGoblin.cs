@@ -15,8 +15,7 @@ public class EnemyGoblin : EnemyScript
         enemyCurHp = enemyMaxHp;
         HPBarUI.maxValue = enemyMaxHp;
         HPBarUI.value = enemyMaxHp;
-        // enemyAggroGauge = new float[] { 0, 0, 0, 0 };
-        enemyAggroGauge = new float[] { 0, 0 };
+        enemyAggroGauge = new float[] { 0, 0, 0, 0 };
     }
 
 
@@ -111,7 +110,6 @@ public class EnemyGoblin : EnemyScript
             case HitBoxScript.enumHitType.PlayerCheck:
                 if (collision.CompareTag("player"))
                 {
-                    Debug.Log("Attack On!!");
                     TargetChangeCheck();
                     AttackRangedOn = true;
                 }
@@ -126,7 +124,6 @@ public class EnemyGoblin : EnemyScript
             case HitBoxScript.enumHitType.PlayerCheck:
                 if (collision.CompareTag("player"))
                 {
-                    Debug.Log("Attack On!!");
                     TargetChangeCheck();
                     AttackRangedOn = true;
                 }
