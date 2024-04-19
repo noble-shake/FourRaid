@@ -20,7 +20,7 @@ public class PlayerWizard: PlayerScript
     [SerializeField] BoxCollider2D DetectCollider;
     [SerializeField] bool AttackRangedOn;
 
-    [SerializeField] GameObject Arrow;
+    [SerializeField] GameObject FireBall;
 
     // UNITY CYCLE
     private void Awake()
@@ -124,12 +124,13 @@ public class PlayerWizard: PlayerScript
         if (EnemyObject == null) return;
 
         Vector2 EnemyPos = EnemyObject.transform.position;
-        float angle = Vector2.Angle(transform.position, EnemyPos);
+
+        float angle = Quaternion.FromToRotation(Vector3.right, transform.position - EnemyObject.transform.position).eulerAngles.z;
 
         if (AttackTime < playerAtkSpeed) return;
 
         Debug.Log(angle);
-        GameObject objArrow= Instantiate(Arrow, transform.position, Quaternion.Euler(new Vector3(0f, 0f, angle)));
+        GameObject objArrow= Instantiate(FireBall, transform.position, Quaternion.Euler(new Vector3(0f, 0f, angle)));
         RangedAttack arrow = objArrow.GetComponent<RangedAttack>();
 
         arrow.SetPlayerRangedAttack(playerID ,4f, playerAtk, playerAtkAggro); // ID, speed , dmg, aggro
@@ -146,11 +147,6 @@ public class PlayerWizard: PlayerScript
         isCommandedMove = true; 
         MovePos = _pos;
     }
-
-    //public override void commandAttack(GameObject _enemy) {
-    //    // isAttackPlaying = true;
-    //    Debug.Log("Attack On?");
-    //}
 
     public override void commandSpell(int _value) { }
 
