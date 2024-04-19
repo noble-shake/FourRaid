@@ -165,13 +165,9 @@ public class PlayerManager : MonoBehaviour
             spells[inum].gameObject.SetActive(true);
             spells[inum].gameObject.GetComponent<SpellScript>().setIconSprite(Icons[inum]);
             spells[inum].gameObject.GetComponent<SpellScript>().setPlayerPrivilage(selectedPlayer);
-            // spells[inum].gameObject.GetComponent<SpellScript>().setPlayerPrivilage(selectedPlayer);
+            spells[inum].gameObject.GetComponent<SpellScript>().SpellInit(selectedPlayer.GetComponent<PlayerScript>().getSpellInfo(inum));
+           
 
-            // spells[inum] = selectedPlayer.GetComponent<PlayerScript>().overrideSpell(spells[inum]);
-            //PlayerScript sc = selectedPlayer.GetComponent<PlayerScript>();
-
-            //StartCoroutine(sc.cor());
-            
         }
 
     }

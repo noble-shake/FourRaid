@@ -14,6 +14,9 @@ public class PlayerWarrior: PlayerScript
     float AttackTime = 0f;
     float Spell1ChargingTime = 0f;
     float Spell2ChargingTime = 0f;
+    float Spell3ChargingTime = 0f;
+    float Spell4ChargingTime = 0f;
+
     // [SerializeField] float playerAtkAggro = 50f;
     [SerializeField] float Spell1Atk = 30f;
     [SerializeField] float Spell1Aggro = 200f;
@@ -48,6 +51,9 @@ public class PlayerWarrior: PlayerScript
     void TimeFlowing() {
         AttackTime += Time.fixedDeltaTime;
         Spell1ChargingTime -= Time.fixedDeltaTime;
+        Spell2ChargingTime -= Time.fixedDeltaTime;
+        Spell3ChargingTime -= Time.fixedDeltaTime;
+        Spell4ChargingTime -= Time.fixedDeltaTime;
 
         // except Infinity
         if (AttackTime > 10f)
@@ -59,6 +65,20 @@ public class PlayerWarrior: PlayerScript
             Spell1ChargingTime = 0f;
         }
 
+        if (Spell2ChargingTime < 0f)
+        {
+            Spell2ChargingTime = 0f;
+        }
+
+        if (Spell3ChargingTime < 0f)
+        {
+            Spell3ChargingTime = 0f;
+        }
+
+        if (Spell4ChargingTime < 0f)
+        {
+            Spell4ChargingTime = 0f;
+        }
     }
 
     void FixedUpdate()
@@ -301,11 +321,11 @@ public class PlayerWarrior: PlayerScript
         isSpellPlaying = true;
         ActivatedSpell = _num;
         // float angle = Vector2.Angle(transform.position, _targetPos);
-        float angle = Quaternion.FromToRotation(Vector3.up, transform.position - EnemyObject.transform.position).eulerAngles.z;
+        float angle = Quaternion.FromToRotation(Vector3.up, _targetPos - transform.position).eulerAngles.z;
 
         if (_num == 2)
         {
-            Spell2ChargingTime = 2f;
+            Spell2ChargingTime = 0.5f;
             ThorwAngle = angle;
 
         }
@@ -381,7 +401,7 @@ public class PlayerWarrior: PlayerScript
     public void Spell3() {
         // Shield Throw and Smite.
 
-        // if (Spell3ChargingTime > 0f) return;
+        if (Spell3ChargingTime > 0f) return;
 
 
         Debug.Log(ThorwAngle);
@@ -392,12 +412,49 @@ public class PlayerWarrior: PlayerScript
 
         // EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, playerAtk, playerAtkAggro);
         AttackTime = 0f;
-
-
+        ActivatedSpell = -1;
+        isSpellPlaying = false;
 
     }
 
     public void Spell4() { 
         
     }
+
+    public override SpellInfo getSpellInfo(int _val)
+    {
+        // public int spellSlotID;
+        // public SpellType spellType;
+        // public Sprite IconImage;
+        // public float cooltime;
+        int _spellSlotID = _val;
+        SpellType _spellType;
+        Sprite _IconsImage;
+        float _cooltime;
+
+        switch (_val) {
+            case 0:
+                _spellType = SpellType.SpellTargetting;
+                _IconsImage = SpellIcon[_val];
+                _cooltime = 10f;
+                return new SpellInfo() { spellSlotID = _spellSlotID, spellType = _spellType, IconImage = _IconsImage, cooltime = _cooltime };
+            case 1:
+                _spellType = SpellType.SpellActive;
+                _IconsImage = SpellIcon[_val];
+                _cooltime = 18f;
+                return new SpellInfo() { spellSlotID = _spellSlotID, spellType = _spellType, IconImage = _IconsImage, cooltime = _cooltime };
+            case 2:
+                _spellType = SpellType.SpellNonTargetting;
+                _IconsImage = SpellIcon[_val];
+                _cooltime = 8f;
+                return new SpellInfo() { spellSlotID = _spellSlotID, spellType = _spellType, IconImage = _IconsImage, cooltime = _cooltime };
+            case 3:
+                _spellType = SpellType.SpellActive;
+                _IconsImage = SpellIcon[_val];
+                _cooltime = 35f;
+                return new SpellInfo() { spellSlotID = _spellSlotID, spellType = _spellType, IconImage = _IconsImage, cooltime = _cooltime };
+        }
+        return new SpellInfo();
+}
+
 }

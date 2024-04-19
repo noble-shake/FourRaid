@@ -223,4 +223,8 @@ public class PlayerScript : MonoBehaviour
     {
 
     }
+
+    public virtual SpellInfo getSpellInfo(int _val) {
+        return new SpellInfo();
+    }
 }

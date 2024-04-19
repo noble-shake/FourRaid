@@ -12,7 +12,7 @@ public class SpellInfo
 {
     public int spellSlotID;
     public SpellType spellType;
-    public Image IconImage;
+    public Sprite IconImage;
     public float cooltime;
 }
 
@@ -32,7 +32,7 @@ public class SpellScript: MonoBehaviour
     public void SpellInit(SpellInfo _info) {
         spellSlotID = _info.spellSlotID;
         spellType = _info.spellType;
-        IconImage = _info.IconImage;
+        IconImage.sprite = _info.IconImage;
         cooltime = _info.cooltime;
     }
 
@@ -211,6 +211,7 @@ public class SpellScript: MonoBehaviour
         }
         
         Time.timeScale = 1f;
+
     }
 
     public void OnActive()
@@ -227,35 +228,15 @@ public class SpellScript: MonoBehaviour
                 StartCoroutine(SpellTargettingReady());
                 break;
             case SpellType.SpellNonTargetting:
-                NonTargetting();
+                StartCoroutine(SpellNonTargettingReady());
                 break;
             case SpellType.SpellActive:
-                SpellActive();
+                StartCoroutine(SpellActiveReady());
                 break;
             case SpellType.SpellNonActive:
-                SpellNonActive();
+                //StartCoroutine();
                 break;
         }
-    }
-
-    public bool Targetting() {
-        SpellTargettingReady();
-        return true;
-    }
-
-    public bool NonTargetting() {
-
-        return true;
-    }
-
-    public bool SpellActive() {
-
-        return true;
-    }
-
-    public bool SpellNonActive() {
-
-        return true;
     }
     
 }
