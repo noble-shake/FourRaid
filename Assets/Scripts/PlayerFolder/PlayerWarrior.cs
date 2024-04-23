@@ -553,30 +553,19 @@ public class PlayerWarrior: PlayerScript
     }
 
     IEnumerator WheelWind () {
-        yield return null;
-
         while (isSpell4Activated) {
             yield return new WaitForSeconds(0.3f);
-            //foreach (EnemyScript Target in WheelWindTargets) {
-            //    if (Target == null) {
-            //        continue;
-            //    }
-            //    Target.hitHp(playerID, Spell4Atk, Spell4Aggro);
-            //}
+
             int enemies = WheelWindTargets.Count;
 
             
             while (true) {
                 if (enemies < 0) break;
 
-                WheelWindTargets[enemies-1].hitHp(playerID, Spell4Atk, Spell4Aggro);
-                enemies--;
-
-                
+                WheelWindTargets[--enemies].hitHp(playerID, Spell4Atk, Spell4Aggro);
+                               
             }
         }
-
-        yield return null;
     }
 
     public override float SpellCooltimeCheck(int _input) {
