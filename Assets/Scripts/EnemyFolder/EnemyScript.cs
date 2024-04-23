@@ -71,7 +71,6 @@ public class EnemyScript : MonoBehaviour
                 temp = enemyAggroGauge[i];
                 maxOrder = i;
             }
-
         }
 
         //    for (int i = 0; i < Heroes.Count; i++)
@@ -96,6 +95,7 @@ public class EnemyScript : MonoBehaviour
         {
             // die
             enemyCurHp = 0;
+            Destroy(gameObject);
         }
         HPBarUIVisbile();
         if (HPBarUI.gameObject.activeSelf) {
@@ -131,6 +131,14 @@ public class EnemyScript : MonoBehaviour
     {
 
 
+    }
+
+    public int getEnemyID() {
+        return enemyID;
+    }
+
+    public void setEnemyID(int _id) {
+        enemyID = _id;
     }
 
 }

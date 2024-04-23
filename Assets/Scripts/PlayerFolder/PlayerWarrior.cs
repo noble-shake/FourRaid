@@ -12,20 +12,35 @@ using UnityEngine.UIElements;
 public class PlayerWarrior: PlayerScript
 {
     float AttackTime = 0f;
-    float Spell1ChargingTime = 0f;
-    float Spell2ChargingTime = 0f;
-    float Spell3ChargingTime = 0f;
-    float Spell4ChargingTime = 0f;
 
     // [SerializeField] float playerAtkAggro = 50f;
+    [Header("Spell1")]
     [SerializeField] float Spell1Atk = 30f;
     [SerializeField] float Spell1Aggro = 200f;
 
+    [Header("Spell2")]
+    [SerializeField] bool isSpell2Activated;
+    [SerializeField] float redueceDMG = 2f;
     [SerializeField] float Spell2Aggro = Mathf.Infinity;
+    [SerializeField] float Spell2duration = 4f;
+    [SerializeField] float Spell2current;
 
+    [Header("Spell3")]
     [SerializeField] float Spell3Atk = 30f;
     [SerializeField] float Spell3Aggro = 200f;
     [SerializeField] float ThorwAngle = 0f;
+
+    [Header("Spell4")]
+    [SerializeField] bool isSpell4Activated;
+    [SerializeField] float Spell4duration = 12f;
+    [SerializeField] float Spell4current;
+    [SerializeField] float Spell4Atk = 5f;
+    [SerializeField] float Spell4Aggro = 20f;
+
+
+
+
+
 
     [Header("Hit Collider")]
     [SerializeField] BoxCollider2D DetectCollider;
@@ -33,6 +48,8 @@ public class PlayerWarrior: PlayerScript
 
     [SerializeField] GameObject ShieldImage;
     [SerializeField] GameObject ShieldObject;
+
+    [SerializeField] List<EnemyScript> WheelWindTargets;
 
     // UNITY CYCLE
     private void Awake()
@@ -42,18 +59,55 @@ public class PlayerWarrior: PlayerScript
         HPBarUI.maxValue = playerMaxHp;
         HPBarUI.value = playerMaxHp;
         isAlive = true;
+        SpellCooltime = new float[4] { 10f, 18f, 8f, 30f};
+        WheelWindTargets = new List<EnemyScript>();
     }
 
     void Start()
     {
 
     }
+
+    public override void setSpellCooltime(int _input) {
+        SpellCurrentCooltime[_input] = SpellCooltime[_input];
+    }
+
+    public override float getSpellCurrentCooltime(int _input)
+    {
+        return SpellCurrentCooltime[_input];
+    }
+
     void TimeFlowing() {
+        for (int inum = 0; inum < 4; inum++) {
+            SpellCurrentCooltime[inum] -= Time.fixedDeltaTime;
+            if (SpellCurrentCooltime[inum] < 0) {
+                SpellCurrentCooltime[inum] = 0f;
+            }
+            SpellFillAmount[inum] = 1 - (float)(SpellCurrentCooltime[inum] / SpellCooltime[inum]);
+        }
+
+        if (isSpell2Activated) {
+            Spell2current -= Time.fixedDeltaTime;
+            if (Spell2current < 0f) {
+                isSpell2Activated = false;
+            }
+        }
+
+        if (isSpell4Activated) {
+            Spell4current -= Time.fixedDeltaTime;
+            if (Spell4current < 0f) {
+                isSpell4Activated = false;
+            }
+        }
+
+
         AttackTime += Time.fixedDeltaTime;
         Spell1ChargingTime -= Time.fixedDeltaTime;
         Spell2ChargingTime -= Time.fixedDeltaTime;
         Spell3ChargingTime -= Time.fixedDeltaTime;
         Spell4ChargingTime -= Time.fixedDeltaTime;
+
+
 
         // except Infinity
         if (AttackTime > 10f)
@@ -297,6 +351,25 @@ public class PlayerWarrior: PlayerScript
                     EnemyObject = collision.gameObject;
                     AttackRangedOn = true;
                 }
+
+                if (collision.CompareTag("enemy")) {
+                    bool existCheck = false; ;
+                    for (int inum = 0; inum < WheelWindTargets.Count; inum++)
+                    {
+                        if (WheelWindTargets[inum].GetComponent<EnemyScript>().getEnemyID() == collision.gameObject.GetComponent<EnemyScript>().getEnemyID())
+                        {
+                            existCheck = true;
+                            break;
+                        }
+                    }
+
+                    if (!existCheck)
+                    {
+                        WheelWindTargets.Add(collision.gameObject.GetComponent<EnemyScript>());
+                    }
+                    
+                }
+
                 break;
         }
     }
@@ -310,9 +383,35 @@ public class PlayerWarrior: PlayerScript
                 {
                     playerAttack();
                 }
+                
+                if (collision.CompareTag("enemy"))
+                {
+                    for (int inum = 0; inum < WheelWindTargets.Count; inum++) {
+                        if (WheelWindTargets[inum].GetComponent<EnemyScript>().getEnemyID() == collision.gameObject.GetComponent<EnemyScript>().getEnemyID()) {
+                            WheelWindTargets.RemoveAt(inum);
+                            break;
+                        }
+                    }
+                }
                 break;
+
         }
 
+    }
+
+    public override void ActiveSpellActivate(int _num) {
+        isSpellPlaying = true;
+        ActivatedSpell = _num;
+
+        if (_num == 1) {
+            Spell2ChargingTime = 0.5f;
+            Spell2current = Spell2duration;
+        }
+
+        if (_num == 3) {
+            Spell4ChargingTime = 0.8f;
+            Spell4current = Spell4duration;
+        }
     }
 
     public override void NonTargettingSpellActivate(int _num, Vector3 _targetPos = new Vector3())
@@ -325,7 +424,7 @@ public class PlayerWarrior: PlayerScript
 
         if (_num == 2)
         {
-            Spell2ChargingTime = 0.5f;
+            Spell3ChargingTime = 0.5f;
             ThorwAngle = angle;
 
         }
@@ -370,12 +469,11 @@ public class PlayerWarrior: PlayerScript
 
         Vector2 TargetPos = Vector2.Distance(transform.position, tempLeftPos) > Vector2.Distance(transform.position, tempRightPos) ? tempRightPos : tempLeftPos;
         MovePos = TargetPos;
-        float dist = Vector2.Distance(transform.position, TargetPos);
 
 
         transform.position = Vector2.MoveTowards(transform.position, TargetPos, Time.deltaTime * 16f);
 
-        if (Vector2.Distance(TargetPos, transform.position) < 0.001f)
+        if (Vector2.Distance(TargetPos, transform.position) < 0.1f)
         {
             EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, Spell1Atk, Spell1Aggro);
             ActivatedSpell = -1;
@@ -388,13 +486,38 @@ public class PlayerWarrior: PlayerScript
         }
     }
 
+    public override void hitHp(float _value)
+    {
+        if (isSpell2Activated) {
+            _value -= redueceDMG;
+            if (_value < 0f) {
+                _value = 0f;
+            }
+        }
+
+        playerCurHp -= _value;
+        if (playerCurHp < 0)
+        {
+            // die
+            playerCurHp = 0;
+        }
+        HPBarUIVisbile();
+        if (HPBarUI.gameObject.activeSelf)
+        {
+            HPBarUI.value = playerCurHp;
+        }
+    }
+
+
     public void Spell2() {
         // Buff : damage reduce & aggro max
 
         if (Spell2ChargingTime > 0f) return;
 
-
-
+        isSpell2Activated = true;
+        Spell2current = Spell2duration;
+        ActivatedSpell = -1;
+        isSpellPlaying = false;
 
     }
 
@@ -403,8 +526,6 @@ public class PlayerWarrior: PlayerScript
 
         if (Spell3ChargingTime > 0f) return;
 
-
-        Debug.Log(ThorwAngle);
         GameObject objArrow = Instantiate(ShieldObject, transform.position, Quaternion.Euler(new Vector3(0f, 0f, ThorwAngle)));
         RangedShield shd = objArrow.GetComponent<RangedShield>();
 
@@ -417,8 +538,49 @@ public class PlayerWarrior: PlayerScript
 
     }
 
-    public void Spell4() { 
-        
+    public void Spell4() {
+        // Wheelwind
+
+        if (Spell4ChargingTime > 0f) return;
+
+        isSpell4Activated = true;
+        Spell4current = Spell4duration;
+        ActivatedSpell = -1;
+        isSpellPlaying = false;
+
+        StartCoroutine(WheelWind());
+
+    }
+
+    IEnumerator WheelWind () {
+        yield return null;
+
+        while (isSpell4Activated) {
+            yield return new WaitForSeconds(0.3f);
+            //foreach (EnemyScript Target in WheelWindTargets) {
+            //    if (Target == null) {
+            //        continue;
+            //    }
+            //    Target.hitHp(playerID, Spell4Atk, Spell4Aggro);
+            //}
+            int enemies = WheelWindTargets.Count;
+
+            
+            while (true) {
+                if (enemies < 0) break;
+
+                WheelWindTargets[enemies-1].hitHp(playerID, Spell4Atk, Spell4Aggro);
+                enemies--;
+
+                
+            }
+        }
+
+        yield return null;
+    }
+
+    public override float SpellCooltimeCheck(int _input) {
+        return SpellFillAmount[_input];
     }
 
     public override SpellInfo getSpellInfo(int _val)
@@ -430,28 +592,24 @@ public class PlayerWarrior: PlayerScript
         int _spellSlotID = _val;
         SpellType _spellType;
         Sprite _IconsImage;
-        float _cooltime;
+        float _cooltime = SpellCooltime[_val];
 
         switch (_val) {
             case 0:
                 _spellType = SpellType.SpellTargetting;
                 _IconsImage = SpellIcon[_val];
-                _cooltime = 10f;
                 return new SpellInfo() { spellSlotID = _spellSlotID, spellType = _spellType, IconImage = _IconsImage, cooltime = _cooltime };
             case 1:
                 _spellType = SpellType.SpellActive;
                 _IconsImage = SpellIcon[_val];
-                _cooltime = 18f;
                 return new SpellInfo() { spellSlotID = _spellSlotID, spellType = _spellType, IconImage = _IconsImage, cooltime = _cooltime };
             case 2:
                 _spellType = SpellType.SpellNonTargetting;
                 _IconsImage = SpellIcon[_val];
-                _cooltime = 8f;
                 return new SpellInfo() { spellSlotID = _spellSlotID, spellType = _spellType, IconImage = _IconsImage, cooltime = _cooltime };
             case 3:
                 _spellType = SpellType.SpellActive;
                 _IconsImage = SpellIcon[_val];
-                _cooltime = 35f;
                 return new SpellInfo() { spellSlotID = _spellSlotID, spellType = _spellType, IconImage = _IconsImage, cooltime = _cooltime };
         }
         return new SpellInfo();

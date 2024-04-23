@@ -11,18 +11,21 @@ using UnityEngine.UIElements;
 public class PlayerHealer: PlayerScript
 {
     float AttackTime = 0f;
-    float Spell1ChargingTime = 0f;
+
     // [SerializeField] float playerAtkAggro = 50f;
     [SerializeField] float Spell1Atk = 30f;
     [SerializeField] float Spell1Aggro = 200f;
 
     [Header("Hit Collider")]
     [SerializeField] BoxCollider2D DetectCollider;
+    [SerializeField] BoxCollider2D AttackCollider;
     [SerializeField] bool AttackRangedOn;
 
     [SerializeField] GameObject Arrow;
 
     [SerializeField] PlayerScript HeroObject;
+
+    [SerializeField] List<EnemyScript> HealColliderEnemies;
 
     // UNITY CYCLE
     private void Awake()
@@ -32,6 +35,7 @@ public class PlayerHealer: PlayerScript
         HPBarUI.maxValue = playerMaxHp;
         HPBarUI.value = playerMaxHp;
         isAlive = true;
+        HealColliderEnemies = new List<EnemyScript>();
     }
 
     void Start()
@@ -39,9 +43,36 @@ public class PlayerHealer: PlayerScript
 
     }
 
-    void TimeFlowing() {
+    public override void setSpellCooltime(int _input)
+    {
+        SpellCurrentCooltime[_input] = SpellCooltime[_input];
+    }
+
+    public override float getSpellCurrentCooltime(int _input)
+    {
+        return SpellCurrentCooltime[_input];
+    }
+
+    void TimeFlowing()
+    {
+        for (int inum = 0; inum < 4; inum++)
+        {
+            SpellCurrentCooltime[inum] -= Time.fixedDeltaTime;
+            if (SpellCurrentCooltime[inum] < 0)
+            {
+                SpellCurrentCooltime[inum] = 0f;
+            }
+            SpellFillAmount[inum] = 1 - (float)(SpellCurrentCooltime[inum] / SpellCooltime[inum]);
+        }
+
+
         AttackTime += Time.fixedDeltaTime;
         Spell1ChargingTime -= Time.fixedDeltaTime;
+        Spell2ChargingTime -= Time.fixedDeltaTime;
+        Spell3ChargingTime -= Time.fixedDeltaTime;
+        Spell4ChargingTime -= Time.fixedDeltaTime;
+
+
 
         // except Infinity
         if (AttackTime > 10f)
@@ -49,10 +80,25 @@ public class PlayerHealer: PlayerScript
             AttackTime = 0f;
         }
 
-        if (Spell1ChargingTime < 0f) {
+        if (Spell1ChargingTime < 0f)
+        {
             Spell1ChargingTime = 0f;
         }
 
+        if (Spell2ChargingTime < 0f)
+        {
+            Spell2ChargingTime = 0f;
+        }
+
+        if (Spell3ChargingTime < 0f)
+        {
+            Spell3ChargingTime = 0f;
+        }
+
+        if (Spell4ChargingTime < 0f)
+        {
+            Spell4ChargingTime = 0f;
+        }
     }
 
     void FixedUpdate()
@@ -125,16 +171,17 @@ public class PlayerHealer: PlayerScript
 
         if (HeroObject == null) return;
 
-        Vector2 EnemyPos = EnemyObject.transform.position;
+        Vector2 HeroPos = HeroObject.transform.position;
 
         if (AttackTime < playerAtkSpeed) return;
 
         AttackTime = 0f;
 
-        EnemyObject.GetComponent<PlayerScript>().healHp(playerAtk);
+        HeroObject.GetComponent<PlayerScript>().healHp(playerAtk);
+        AttackCollider.transform.position = HeroObject.transform.position;
         // Enemy Aggro Gauge up.
 
-        Vector3 looking = EnemyPos.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+        Vector3 looking = HeroPos.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
         transform.GetChild(0).localScale = looking;
         transform.GetChild(1).localScale = looking;
     }
@@ -190,7 +237,6 @@ public class PlayerHealer: PlayerScript
         if (isClicked && isPlayerDragToMove && isPlayerDownMouse)
         {
             isCommandedAttack = false;
-            Debug.Log("command on?");
             commandMove(Input.mousePosition);
             isPlayerDragToMove = false;
 
@@ -203,14 +249,13 @@ public class PlayerHealer: PlayerScript
                 foreach (RaycastHit2D target in hit) {
                     if (target.collider.CompareTag("player"))
                     {
-                        HeroObject = target.collider.GetComponent<PlayerScript>();
+                        HeroObject = target.collider.GetComponentInParent<PlayerScript>();
                         isCommandedMove = false;
                         isCommandedAttack = true;
                         AttackRangedOn = true;
                         playerAttack();
                     }
                 }
-
 
             }
         }
@@ -231,14 +276,92 @@ public class PlayerHealer: PlayerScript
         switch (_hitType)
         {
             case HitBoxScript.enumHitType.EnemyCheck:
-                if (isCommandedAttack && collision.CompareTag("enemy")) {
+                if (isCommandedAttack && collision.CompareTag("enemy"))
+                {
                     EnemyObject = collision.gameObject;
-                    AttackRangedOn = true;
-                    
+
                 }
                 break;
 
         }
+    }
+
+    //public override void AttackTriggerStay(HitBoxScript.enumHitType _hitType, Collider2D collision)
+    //{
+    //    switch (_hitType)
+    //    {
+    //        case HitBoxScript.enumHitType.EnemyCheck:
+    //            if (isCommandedAttack && collision.CompareTag("enemy"))
+    //            {
+    //                EnemyObject = collision.gameObject;
+    //                AttackRangedOn = true;
+
+    //            }
+    //            break;
+
+    //    }
+    //}
+
+
+    public override void AttackTriggerEnter(HitBoxScript.enumHitType _hitType, Collider2D collision)
+    {
+        switch (_hitType)
+        {
+            case HitBoxScript.enumHitType.EnemyCheck:
+                if (isCommandedAttack && collision.CompareTag("enemy"))
+                {
+                    EnemyObject = collision.gameObject;
+                    AttackRangedOn = true;
+                }
+
+                if (collision.CompareTag("enemy"))
+                {
+                    bool existCheck = false; ;
+                    for (int inum = 0; inum < HealColliderEnemies.Count; inum++)
+                    {
+                        if (HealColliderEnemies[inum].GetComponent<EnemyScript>().getEnemyID() == collision.gameObject.GetComponent<EnemyScript>().getEnemyID())
+                        {
+                            existCheck = true;
+                            break;
+                        }
+                    }
+
+                    if (!existCheck)
+                    {
+                        HealColliderEnemies.Add(collision.gameObject.GetComponent<EnemyScript>());
+                    }
+
+                }
+
+                break;
+        }
+    }
+
+    public override void AttackTriggerExit(HitBoxScript.enumHitType _hitType, Collider2D collision)
+    {
+        switch (_hitType)
+        {
+            case HitBoxScript.enumHitType.EnemyCheck:
+                if (isCommandedAttack)
+                {
+                    playerAttack();
+                }
+
+                if (collision.CompareTag("enemy"))
+                {
+                    for (int inum = 0; inum < HealColliderEnemies.Count; inum++)
+                    {
+                        if (HealColliderEnemies[inum].GetComponent<EnemyScript>().getEnemyID() == collision.gameObject.GetComponent<EnemyScript>().getEnemyID())
+                        {
+                            HealColliderEnemies.RemoveAt(inum);
+                            break;
+                        }
+                    }
+                }
+                break;
+
+        }
+
     }
 
 

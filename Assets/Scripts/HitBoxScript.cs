@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class HitBoxScript : MonoBehaviour
 {
+
+
     public enum enumHitType
     {
         PlayerCheck,
@@ -39,7 +41,7 @@ public class HitBoxScript : MonoBehaviour
     {
         if (hitType == enumHitType.PlayerCheck)
         {
-            ownedObject.GetComponent<EnemyScript>().AttackTriggerEnter(hitType, collision); ;
+            ownedObject.GetComponent<EnemyScript>().AttackTriggerEnter(hitType, collision);
         }
         else if (hitType == enumHitType.EnemyCheck)
         {

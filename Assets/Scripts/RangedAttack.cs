@@ -35,8 +35,6 @@ public class RangedAttack : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
-    //렌더링 되고있다가 더이상 렌더링 되지 않게 되었을때
     private void OnBecameInvisible()
     {
         Destroy(gameObject);

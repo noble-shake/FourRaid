@@ -46,6 +46,17 @@ public class PlayerScript : MonoBehaviour
     [Header("Target")]
     [SerializeField] protected GameObject EnemyObject;
 
+    [Header("Player Spell")]
+    protected float[] SpellCooltime = new float[4] { 0f, 0f, 0f, 0f };
+    protected float[] SpellCurrentCooltime = new float[4] { 0f, 0f, 0f, 0f };
+    protected float[] SpellFillAmount = new float[4] { 0f, 0f, 0f, 0f };
+
+    protected float Spell1ChargingTime = 0f;
+    protected float Spell2ChargingTime = 0f;
+    protected float Spell3ChargingTime = 0f;
+    protected float Spell4ChargingTime = 0f;
+
+
     //public SpellScript overrideSpell(SpellScript _input) {
     //    // _input = _input.GetComponent<SpellWarrior1>();
 
@@ -53,6 +64,14 @@ public class PlayerScript : MonoBehaviour
     //    return _input.GetComponent<SpellWarrior1>();
     //}
 
+    public virtual float getSpellCurrentCooltime(int _input) {
+        return SpellCurrentCooltime[_input];
+    }
+
+    public virtual void setSpellCooltime(int _input)
+    {
+        SpellCurrentCooltime[_input] = SpellCooltime[_input];
+    }
 
     public void HPBarUIVisbile() {
         if (playerCurHp == playerMaxHp)
@@ -88,7 +107,7 @@ public class PlayerScript : MonoBehaviour
 
     public virtual void commandSpell(int _value) { }
 
-    public void hitHp(float _value) 
+    public virtual void hitHp(float _value) 
     {
         playerCurHp -= _value;
         if (playerCurHp < 0) {
@@ -99,7 +118,6 @@ public class PlayerScript : MonoBehaviour
         if (HPBarUI.gameObject.activeSelf) {
             HPBarUI.value = playerCurHp;
         }
-
     }
 
     public void healHp(float _value) 
@@ -222,6 +240,11 @@ public class PlayerScript : MonoBehaviour
     public virtual void PlayerMouseExit()
     {
 
+    }
+
+    public virtual float SpellCooltimeCheck(int _input)
+    {
+        return -1f;
     }
 
     public virtual SpellInfo getSpellInfo(int _val) {

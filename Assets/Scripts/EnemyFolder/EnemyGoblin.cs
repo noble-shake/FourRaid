@@ -2,6 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class EnemyInfo {
+    public int enemyID;
+    public float enemyMaxHp;
+    public float enemyAtk;
+    public float enemyAtkSpeed;
+}
+
 public class EnemyGoblin : EnemyScript
 {
     [Header("Hit Collider")]
@@ -11,7 +19,6 @@ public class EnemyGoblin : EnemyScript
 
     protected override void ObjectInit()
     {
-        enemyID = 0;
         enemyCurHp = enemyMaxHp;
         HPBarUI.maxValue = enemyMaxHp;
         HPBarUI.value = enemyMaxHp;
@@ -28,18 +35,17 @@ public class EnemyGoblin : EnemyScript
         bool AttackOn = false;
 
         Vector2 HeroPos = enemyAggroTarget.transform.position;
-        if (Mathf.Abs(HeroPos.x - transform.position.x) < 2f || Mathf.Abs(HeroPos.y - transform.position.y) > 1f)
+        if (Mathf.Abs(HeroPos.x - transform.position.x) < 2f || Mathf.Abs(HeroPos.y - transform.position.y) > 2f)
         {
             Vector2 tempLeftPos = HeroPos;
             tempLeftPos.x = tempLeftPos.x - 3f;
             Vector2 tempRightPos = HeroPos;
             tempRightPos.x = tempRightPos.x + 3f;
 
-
-
             Vector3 tempPos = Vector2.Distance(tempLeftPos, transform.position) < Vector2.Distance(tempRightPos, transform.position) ? tempLeftPos : tempRightPos;
 
             transform.position = Vector2.MoveTowards(transform.position, tempPos, speed * Time.deltaTime);
+
         }
         else
         {
@@ -65,6 +71,10 @@ public class EnemyGoblin : EnemyScript
 
         // Vector3 TargetPos = enemyAggroTarget.transform.GetChild(1).transform.position;
         Vector3 TargetPos = enemyAggroTarget.transform.position;
+
+        if (Vector2.Distance(TargetPos, transform.position) > 4f && AttackRangedOn) {
+            AttackRangedOn = false;
+        }
 
         if (AttackRangedOn) return;
 

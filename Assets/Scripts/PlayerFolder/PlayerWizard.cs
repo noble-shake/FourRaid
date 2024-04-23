@@ -11,7 +11,7 @@ using UnityEngine.UIElements;
 public class PlayerWizard: PlayerScript
 {
     float AttackTime = 0f;
-    float Spell1ChargingTime = 0f;
+
     // [SerializeField] float playerAtkAggro = 50f;
     [SerializeField] float Spell1Atk = 30f;
     [SerializeField] float Spell1Aggro = 200f;
@@ -129,7 +129,6 @@ public class PlayerWizard: PlayerScript
 
         if (AttackTime < playerAtkSpeed) return;
 
-        Debug.Log(angle);
         GameObject objArrow= Instantiate(FireBall, transform.position, Quaternion.Euler(new Vector3(0f, 0f, angle)));
         RangedAttack arrow = objArrow.GetComponent<RangedAttack>();
 

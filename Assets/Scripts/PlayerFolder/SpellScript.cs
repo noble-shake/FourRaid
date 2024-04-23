@@ -46,17 +46,23 @@ public class SpellScript: MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
     }
 
     private void FixedUpdate()
     {
-        currenmt_cooltime -= Time.deltaTime;
-        if (currenmt_cooltime < 0)
+        if (privilegedPlayer != null) 
         {
-            currenmt_cooltime = 0f;
+            IconImage.fillAmount = privilegedPlayer.GetComponent<PlayerScript>().SpellCooltimeCheck(spellSlotID);
         }
 
-        IconImage.fillAmount = 1 - (float)(currenmt_cooltime / cooltime);
+        //currenmt_cooltime -= Time.deltaTime;
+        //if (currenmt_cooltime < 0)
+        //{
+        //    currenmt_cooltime = 0f;
+        //}
+
+        //IconImage.fillAmount = 1 - (float)(currenmt_cooltime / cooltime);
     }
 
     public void setIconSprite(Sprite _spell)
@@ -95,10 +101,14 @@ public class SpellScript: MonoBehaviour
         Debug.Log("Active");
         DarkSkin.gameObject.SetActive(true);
 
+        privilegedPlayer.GetComponent<PlayerScript>().ActiveSpellActivate(spellSlotID);
         // privilegedPlayer.GetComponent<PlayerScript>().NonTargettingSpellActivate(spellSlotID, convertedPos);
 
         // animator 
-        yield return null;
+        yield return new WaitForSeconds(0.3f);
+        privilegedPlayer.GetComponent<PlayerScript>().setSpellCooltime(spellSlotID);
+        Time.timeScale = 1f;
+        DarkSkin.gameObject.SetActive(false);
     }
 
     IEnumerator SpellNonTargettingReady() {
@@ -150,7 +160,7 @@ public class SpellScript: MonoBehaviour
         Debug.Log("spell Activated");
         if (!isCanceled)
         {
-            currenmt_cooltime = cooltime;
+            privilegedPlayer.GetComponent<PlayerScript>().setSpellCooltime(spellSlotID);
         }
 
         Time.timeScale = 1f;
@@ -207,7 +217,7 @@ public class SpellScript: MonoBehaviour
         PlayerManager.instance.spellDeActivating();
 
         if (!isCanceled) {
-            currenmt_cooltime = cooltime;
+            privilegedPlayer.GetComponent<PlayerScript>().setSpellCooltime(spellSlotID);
         }
         
         Time.timeScale = 1f;
@@ -216,7 +226,7 @@ public class SpellScript: MonoBehaviour
 
     public void OnActive()
     {
-        if (currenmt_cooltime != 0) return;
+        if (privilegedPlayer.GetComponent<PlayerScript>().getSpellCurrentCooltime(spellSlotID) != 0) return;
 
         SpellTypeSwitching(spellType);
     }
