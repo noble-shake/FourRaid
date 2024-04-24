@@ -159,7 +159,7 @@ public class PlayerScript : MonoBehaviour
         playerID = _value;
     }
 
-    public void setPlayerAtk(int _value)
+    public void setPlayerAtk(float _value)
     {
         playerAtk = _value;
     }

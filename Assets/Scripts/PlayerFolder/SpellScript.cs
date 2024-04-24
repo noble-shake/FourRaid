@@ -88,9 +88,7 @@ public class SpellScript: MonoBehaviour
     IEnumerator SpellCharging() {
         PlayerManager.instance.spellActivating();
         yield return null;
-        Debug.Log("before click");
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
-        Debug.Log("after click");
         PlayerManager.instance.spellDeActivating();
     }
 
@@ -98,7 +96,6 @@ public class SpellScript: MonoBehaviour
         Time.timeScale = 0.5f;
         PlayerManager.instance.spellActivating();
         yield return null;
-        Debug.Log("Active");
         DarkSkin.gameObject.SetActive(true);
 
         privilegedPlayer.GetComponent<PlayerScript>().ActiveSpellActivate(spellSlotID);
@@ -115,7 +112,6 @@ public class SpellScript: MonoBehaviour
         Time.timeScale = 0.5f;
         PlayerManager.instance.spellActivating();
         yield return null;
-        Debug.Log("before click");
         GameObject IndicatorPlayer = privilegedPlayer.GetComponent<PlayerScript>().getIndicator();
         LineRenderer IndicatorLine = privilegedPlayer.GetComponent<PlayerScript>().getIndicatorLine();
         IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(true);
@@ -154,10 +150,8 @@ public class SpellScript: MonoBehaviour
         }
         DarkSkin.gameObject.SetActive(false);
         IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(false);
-        Debug.Log("after click");
         PlayerManager.instance.spellDeActivating();
 
-        Debug.Log("spell Activated");
         if (!isCanceled)
         {
             privilegedPlayer.GetComponent<PlayerScript>().setSpellCooltime(spellSlotID);
@@ -171,7 +165,6 @@ public class SpellScript: MonoBehaviour
         Time.timeScale = 0.5f;
         PlayerManager.instance.spellActivating();
         yield return null;
-        Debug.Log("before click");
         GameObject IndicatorPlayer = privilegedPlayer.GetComponent<PlayerScript>().getIndicator();
         LineRenderer IndicatorLine = privilegedPlayer.GetComponent<PlayerScript>().getIndicatorLine();
         IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(true);
@@ -196,6 +189,10 @@ public class SpellScript: MonoBehaviour
 
                 for (int inum = 0; inum < hit.Length; inum++) {
                     if (hit[inum].collider.CompareTag("enemy")) {
+                        isCanceled = false;
+                        privilegedPlayer.GetComponent<PlayerScript>().TargettingSpellActivate(spellSlotID, hit[inum].collider.gameObject);
+                    }
+                    else if (hit[inum].collider.CompareTag("player") && privilegedPlayer.name == "PlayerHealer") {
                         isCanceled = false;
                         privilegedPlayer.GetComponent<PlayerScript>().TargettingSpellActivate(spellSlotID, hit[inum].collider.gameObject);
                     }

@@ -8,13 +8,33 @@ using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
 
-public class PlayerHealer: PlayerScript
+public class PlayerHealer : PlayerScript
 {
     float AttackTime = 0f;
 
     // [SerializeField] float playerAtkAggro = 50f;
-    [SerializeField] float Spell1Atk = 30f;
+    [Header("Spell1")]
+    [SerializeField] float Spell1current;
     [SerializeField] float Spell1Aggro = 200f;
+
+    [Header("Spell2")]
+    [SerializeField] bool isSpell2Activated;
+    [SerializeField] float TargetOriginAtk;
+    [SerializeField] PlayerScript Spell2Target;
+    [SerializeField] float Spell2Aggro = Mathf.Infinity;
+    [SerializeField] float Spell2duration = 4f;
+    [SerializeField] float Spell2current;
+
+    [Header("Spell3")]
+    [SerializeField] float Spell3Atk = 20f;
+    [SerializeField] float Spell3Aggro = 20;
+
+    [Header("Spell4")]
+    [SerializeField] bool isSpell4Activated;
+    [SerializeField] float Spell4duration = 12f;
+    [SerializeField] float Spell4current;
+    [SerializeField] float Spell4Atk = 5f;
+    [SerializeField] float Spell4Aggro = 20f;
 
     [Header("Hit Collider")]
     [SerializeField] BoxCollider2D DetectCollider;
@@ -26,6 +46,8 @@ public class PlayerHealer: PlayerScript
     [SerializeField] PlayerScript HeroObject;
 
     [SerializeField] List<EnemyScript> HealColliderEnemies;
+    [SerializeField] RangedCow minnerCow;
+    [SerializeField] RangedCow blackCow;
 
     // UNITY CYCLE
     private void Awake()
@@ -36,6 +58,7 @@ public class PlayerHealer: PlayerScript
         HPBarUI.value = playerMaxHp;
         isAlive = true;
         HealColliderEnemies = new List<EnemyScript>();
+        SpellCooltime = new float[4] { 12f, 5f, 24f, 60f };
     }
 
     void Start()
@@ -64,6 +87,18 @@ public class PlayerHealer: PlayerScript
             }
             SpellFillAmount[inum] = 1 - (float)(SpellCurrentCooltime[inum] / SpellCooltime[inum]);
         }
+
+        if (isSpell2Activated)
+        {
+            Spell2current -= Time.fixedDeltaTime;
+            if (Spell2current < 0f)
+            {
+                isSpell2Activated = false;
+                Spell2Target.GetComponent<PlayerScript>().setPlayerAtk(TargetOriginAtk);
+                Spell2Target = null;
+            }
+        }
+
 
 
         AttackTime += Time.fixedDeltaTime;
@@ -108,7 +143,8 @@ public class PlayerHealer: PlayerScript
         HPBarUIVisbile();
         if (isSpellPlaying)
         {
-            switch (ActivatedSpell) {
+            switch (ActivatedSpell)
+            {
                 case 0:
                     Spell1();
                     break;
@@ -126,7 +162,8 @@ public class PlayerHealer: PlayerScript
                     break;
             }
         }
-        else {
+        else
+        {
             playerMove();
             playerAttack();
         }
@@ -136,13 +173,14 @@ public class PlayerHealer: PlayerScript
 
     // MAIN SCRIPT
 
-    private void playerMove() {
+    private void playerMove()
+    {
         if (!isCommandedMove) return;
 
         if (AttackRangedOn) return;
 
         Vector3 convertedPos = MovePos;
-        if (!isCommandedAttack) 
+        if (!isCommandedAttack)
         {
             MovePos.z = Camera.main.transform.position.z;
             convertedPos = Camera.main.ScreenToWorldPoint(MovePos);
@@ -166,7 +204,8 @@ public class PlayerHealer: PlayerScript
 
     }
 
-    private void playerAttack() {
+    private void playerAttack()
+    {
         if (!AttackRangedOn) return;
 
         if (HeroObject == null) return;
@@ -186,8 +225,9 @@ public class PlayerHealer: PlayerScript
         transform.GetChild(1).localScale = looking;
     }
 
-    public virtual void commandMove(Vector3 _pos) {
-        isCommandedMove = true; 
+    public virtual void commandMove(Vector3 _pos)
+    {
+        isCommandedMove = true;
         MovePos = _pos;
     }
 
@@ -208,13 +248,14 @@ public class PlayerHealer: PlayerScript
     {
         // indicator process
 
-        if (isClicked && isPlayerDragToMove) {
+        if (isClicked && isPlayerDragToMove)
+        {
             Vector3 IndicatorPos = IndicatorPlayer.transform.GetChild(1).transform.position;
 
             Vector3 TargetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             TargetPos.z = 0f;
             Vector3 ConvertedIndicator = Camera.main.WorldToScreenPoint(IndicatorPos);
-           
+
 
             IndicatorLine.positionCount = 2;
             Vector3[] vector2s = new Vector3[2] { IndicatorPos, TargetPos };
@@ -245,8 +286,10 @@ public class PlayerHealer: PlayerScript
             RaycastHit2D[] hit = Physics2D.GetRayIntersectionAll(ray);
             AttackRangedOn = false;
 
-            if (hit != null) {
-                foreach (RaycastHit2D target in hit) {
+            if (hit != null)
+            {
+                foreach (RaycastHit2D target in hit)
+                {
                     if (target.collider.CompareTag("player"))
                     {
                         HeroObject = target.collider.GetComponentInParent<PlayerScript>();
@@ -259,7 +302,8 @@ public class PlayerHealer: PlayerScript
 
             }
         }
-        if (IndicatorPlayer.transform.GetChild(1).transform.gameObject.activeSelf) {
+        if (IndicatorPlayer.transform.GetChild(1).transform.gameObject.activeSelf)
+        {
             IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(false);
         }
 
@@ -364,97 +408,184 @@ public class PlayerHealer: PlayerScript
 
     }
 
+    public override void ActiveSpellActivate(int _num)
+    {
+        isSpellPlaying = true;
+        ActivatedSpell = _num;
 
+        if (_num == 0) {
+            Spell1ChargingTime = 0.5f;
+            Spell1current = Spell2duration;
+        }
+
+        if (_num == 1)
+        {
+            Spell2ChargingTime = 0.5f;
+            Spell2current = Spell2duration;
+        }
+
+        if (_num == 2)
+        {
+            Spell2ChargingTime = 0.5f;
+            Spell2current = Spell2duration;
+        }
+
+        if (_num == 3)
+        {
+            Spell4ChargingTime = 0.8f;
+            Spell4current = Spell4duration;
+        }
+
+        Vector3 looking = HeroObject.transform.position.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+        transform.GetChild(0).localScale = looking;
+        transform.GetChild(1).localScale = looking;
+    }
 
     public override void NonTargettingSpellActivate(int _num, Vector3 _targetPos = new Vector3())
     {
         // Instantiate Shield Attack and move.
         isSpellPlaying = true;
         ActivatedSpell = _num;
-        float angle = Vector2.Angle(transform.position, _targetPos);
+        // float angle = Vector2.Angle(transform.position, _targetPos);
+        float angle = Quaternion.FromToRotation(Vector3.up, _targetPos - transform.position).eulerAngles.z;
 
+        Vector3 looking = _targetPos.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+        transform.GetChild(0).localScale = looking;
+        transform.GetChild(1).localScale = looking;
     }
 
     public override void TargettingSpellActivate(int _num, GameObject _targetObject = null)
     {
-        isSpellPlaying = true;
-        ActivatedSpell = _num;
-        EnemyObject = _targetObject;
-
-        if (_num == 0) {
-            Spell1ChargingTime = 1f;
-        }
-
-        // commandAttack(EnemyObject);
-
-
+        //isSpellPlaying = true;
+        //ActivatedSpell = _num;
+        //EnemyObject = _targetObject;
     }
 
-    public void Spell1() {
-        // Targetting Spell : Jump Attack
+    public void Spell1()
+    {
+        // Great Heal, Resotre 50% MaxHP
 
         // animation
 
         if (Spell1ChargingTime > 0f) return;
         isCommandedMove = false;
 
-        Vector2 tempPos = EnemyObject.transform.position;
-        Vector2 tempLeftPos = tempPos;
-        Vector2 tempRightPos = tempPos;
-        tempLeftPos.x -= 3f;
-        tempRightPos.x += 3f;
+        // Buff : damage reduce & aggro max
 
-        Vector2 TargetPos = Vector2.Distance(transform.position, tempLeftPos) > Vector2.Distance(transform.position, tempRightPos) ? tempRightPos : tempLeftPos;
-        MovePos = TargetPos;
-        float dist = Vector2.Distance(transform.position, TargetPos);
+        ActivatedSpell = -1;
+        isSpellPlaying = false;
 
-        // get Bazier point
-        //float x = Mathf.Cos(30) * dist;
-        //float y = Mathf.Sin(45) * dist;
+        AttackCollider.transform.position = HeroObject.transform.position;
+        float hpGauge = HeroObject.GetComponent<PlayerScript>().getPlayerMaxHp();
+        HeroObject.GetComponent<PlayerScript>().healHp(hpGauge / 2);
+        isCommandedAttack = true;
 
-        //Vector2 midPoint = Vector2.zero;
-        //if (transform.position.x > TargetPos.x) {
-        //    midPoint.x = TargetPos.x - x;
-        //    midPoint.x = TargetPos.y + y;
-        //}
-        //else
-        //{
-        //    midPoint.x = TargetPos.x + x;
-        //    midPoint.x = TargetPos.y + y;
-        //}
+        Vector3 looking = HeroObject.transform.position.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+        transform.GetChild(0).localScale = looking;
+        transform.GetChild(1).localScale = looking;
 
-        //Vector2 p4 = Vector2.Lerp(transform.position, midPoint, Time.deltaTime);
-        //Vector2 p5 = Vector2.Lerp(midPoint, TargetPos, Time.deltaTime);
-        //transform.position = Vector3.Lerp(p4, p5, Time.deltaTime);
+    }
 
-        transform.position = Vector2.MoveTowards(transform.position, TargetPos, Time.deltaTime * 4f);
+    public void Spell2()
+    {
+        // Damage Buff, Increase Atk Power for 30%
 
-        if (Vector2.Distance(TargetPos, transform.position) < 0.001f)
+        // animation
+
+        if (Spell2ChargingTime > 0f) return;
+        isCommandedMove = false;
+
+        isSpell2Activated = true;
+        Spell2current = Spell2duration;
+        ActivatedSpell = -1;
+        isSpellPlaying = false;
+
+        AttackCollider.transform.position = HeroObject.transform.position;
+        TargetOriginAtk = HeroObject.GetComponent<PlayerScript>().getPlayerAtk();
+        HeroObject.GetComponent<PlayerScript>().setPlayerAtk(TargetOriginAtk * 1.3f);
+        isCommandedAttack = true;
+        Spell2Target = HeroObject;
+
+        Vector3 looking = HeroObject.transform.position.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+        transform.GetChild(0).localScale = looking;
+        transform.GetChild(1).localScale = looking;
+    }
+
+    public void Spell3()
+    {
+        // Summon 3 Cows
+        if (Spell3ChargingTime > 0f) return;
+        isCommandedMove = false;
+        isSpellPlaying = false;
+
+        StartCoroutine(SummonCow());
+        isCommandedAttack = true;
+
+        Vector3 looking = HeroObject.transform.position.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+        transform.GetChild(0).localScale = looking;
+        transform.GetChild(1).localScale = looking;
+
+    }
+
+    IEnumerator SummonCow()
+    {
+
+        RangedCow objCow = Instantiate(minnerCow, AttackCollider.transform.position, AttackCollider.transform.rotation);
+        objCow.GetComponent<RangedCow>().SetPlayerRangedCow(playerID, Spell3Atk, Spell3Aggro, HealColliderEnemies);
+
+
+        yield return new WaitForSeconds(0.8f);
+
+        objCow= Instantiate(minnerCow, AttackCollider.transform.position, AttackCollider.transform.rotation);
+        objCow.GetComponent<RangedCow>().SetPlayerRangedCow(playerID, Spell3Atk, Spell3Aggro, HealColliderEnemies);
+
+        yield return new WaitForSeconds(0.8f);
+
+        objCow= Instantiate(blackCow, AttackCollider.transform.position, AttackCollider.transform.rotation);
+        objCow.GetComponent<RangedCow>().SetPlayerRangedCow(playerID, Spell3Atk * 2, Spell3Aggro, HealColliderEnemies);
+    }
+
+    public void Spell4()
+    {
+
+    }
+
+
+    public override float SpellCooltimeCheck(int _input)
+    {
+        return SpellFillAmount[_input];
+    }
+
+    public override SpellInfo getSpellInfo(int _val)
+    {
+        // public int spellSlotID;
+        // public SpellType spellType;
+        // public Sprite IconImage;
+        // public float cooltime;
+        int _spellSlotID = _val;
+        SpellType _spellType;
+        Sprite _IconsImage;
+        float _cooltime = SpellCooltime[_val];
+
+        switch (_val)
         {
-            EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, Spell1Atk, Spell1Aggro);
-            ActivatedSpell = -1;
-            isSpellPlaying = false;
-            isCommandedAttack = true;
-            isCommandedMove = true;
-            AttackRangedOn = true;
-            playerAttack();
-            return;
+            case 0:
+                _spellType = SpellType.SpellActive;
+                _IconsImage = SpellIcon[_val];
+                return new SpellInfo() { spellSlotID = _spellSlotID, spellType = _spellType, IconImage = _IconsImage, cooltime = _cooltime };
+            case 1:
+                _spellType = SpellType.SpellActive;
+                _IconsImage = SpellIcon[_val];
+                return new SpellInfo() { spellSlotID = _spellSlotID, spellType = _spellType, IconImage = _IconsImage, cooltime = _cooltime };
+            case 2:
+                _spellType = SpellType.SpellActive;
+                _IconsImage = SpellIcon[_val];
+                return new SpellInfo() { spellSlotID = _spellSlotID, spellType = _spellType, IconImage = _IconsImage, cooltime = _cooltime };
+            case 3:
+                _spellType = SpellType.SpellActive;
+                _IconsImage = SpellIcon[_val];
+                return new SpellInfo() { spellSlotID = _spellSlotID, spellType = _spellType, IconImage = _IconsImage, cooltime = _cooltime };
         }
-
-
-    }
-
-    public void Spell2() { 
-        // Shield Throw and Move.
-
-
-    }
-
-    public void Spell3() { 
-    
-    }
-
-    public void Spell4() { 
-        
+        return new SpellInfo();
     }
 }

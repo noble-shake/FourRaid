@@ -827,7 +827,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8886315372411617450, guid: ca9c58e7cedf88945a29166107838fe1, type: 3}
       propertyPath: enemyAtk
-      value: 30
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8886315372411617450, guid: ca9c58e7cedf88945a29166107838fe1, type: 3}
+      propertyPath: enemyCurHp
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 8886315372411617450, guid: ca9c58e7cedf88945a29166107838fe1, type: 3}
+      propertyPath: enemyMaxHp
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 8886315372411617450, guid: ca9c58e7cedf88945a29166107838fe1, type: 3}
       propertyPath: AttackCollider
@@ -1182,7 +1190,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8886315372411617450, guid: ca9c58e7cedf88945a29166107838fe1, type: 3}
       propertyPath: enemyAtk
-      value: 30
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8886315372411617450, guid: ca9c58e7cedf88945a29166107838fe1, type: 3}
+      propertyPath: enemyCurHp
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 8886315372411617450, guid: ca9c58e7cedf88945a29166107838fe1, type: 3}
+      propertyPath: enemyMaxHp
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 8886315372411617450, guid: ca9c58e7cedf88945a29166107838fe1, type: 3}
       propertyPath: AttackCollider
@@ -1709,7 +1725,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8886315372411617450, guid: ca9c58e7cedf88945a29166107838fe1, type: 3}
       propertyPath: enemyAtk
-      value: 30
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8886315372411617450, guid: ca9c58e7cedf88945a29166107838fe1, type: 3}
+      propertyPath: enemyCurHp
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 8886315372411617450, guid: ca9c58e7cedf88945a29166107838fe1, type: 3}
+      propertyPath: enemyMaxHp
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 8886315372411617450, guid: ca9c58e7cedf88945a29166107838fe1, type: 3}
       propertyPath: AttackCollider
@@ -2111,6 +2135,34 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6105045811903274851, guid: 07bcf83d7e21bef469370fb3288fbe24, type: 3}
+      propertyPath: blackCow
+      value: 
+      objectReference: {fileID: 5536087993349402675, guid: e51be80268bcf6d499aa868fb4089806, type: 3}
+    - target: {fileID: 6105045811903274851, guid: 07bcf83d7e21bef469370fb3288fbe24, type: 3}
+      propertyPath: playerID
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6105045811903274851, guid: 07bcf83d7e21bef469370fb3288fbe24, type: 3}
+      propertyPath: minnerCow
+      value: 
+      objectReference: {fileID: 4138853024942234169, guid: e44698d6a7bbeaf4a8e5ce0736e78dc6, type: 3}
+    - target: {fileID: 7587474900717407644, guid: 07bcf83d7e21bef469370fb3288fbe24, type: 3}
+      propertyPath: m_Size.x
+      value: 10.111758
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587474900717407644, guid: 07bcf83d7e21bef469370fb3288fbe24, type: 3}
+      propertyPath: m_Size.y
+      value: 5.1701975
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587474900717407644, guid: 07bcf83d7e21bef469370fb3288fbe24, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.3587432
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587474900717407644, guid: 07bcf83d7e21bef469370fb3288fbe24, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.36673605
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2316,7 +2368,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8886315372411617450, guid: ca9c58e7cedf88945a29166107838fe1, type: 3}
       propertyPath: enemyAtk
-      value: 30
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8886315372411617450, guid: ca9c58e7cedf88945a29166107838fe1, type: 3}
+      propertyPath: enemyCurHp
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 8886315372411617450, guid: ca9c58e7cedf88945a29166107838fe1, type: 3}
+      propertyPath: enemyMaxHp
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 8886315372411617450, guid: ca9c58e7cedf88945a29166107838fe1, type: 3}
       propertyPath: AttackCollider

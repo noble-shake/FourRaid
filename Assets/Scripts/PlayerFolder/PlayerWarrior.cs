@@ -285,7 +285,6 @@ public class PlayerWarrior: PlayerScript
         if (isClicked && isPlayerDragToMove && isPlayerDownMouse)
         {
             isCommandedAttack = false;
-            Debug.Log("command on?");
             commandMove(Input.mousePosition);
             isPlayerDragToMove = false;
 
@@ -556,13 +555,13 @@ public class PlayerWarrior: PlayerScript
         while (isSpell4Activated) {
             yield return new WaitForSeconds(0.3f);
 
-            int enemies = WheelWindTargets.Count;
+            int enemies = WheelWindTargets.Count -1;
 
             
             while (true) {
                 if (enemies < 0) break;
 
-                WheelWindTargets[--enemies].hitHp(playerID, Spell4Atk, Spell4Aggro);
+                WheelWindTargets[enemies--].hitHp(playerID, Spell4Atk, Spell4Aggro);
                                
             }
         }
