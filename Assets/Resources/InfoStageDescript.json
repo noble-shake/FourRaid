@@ -1,0 +1,22 @@
+[
+    {
+        "stageID": "1",
+        "stageName": "Airy Forest",
+        "descript": "At the beginning of the journey, the beautiful scenery inspires courage."
+    },
+    {
+        "stageID": "2",
+        "stageName": "Threat Valley",
+        "descript": "The mountain gets deeper, and more and more threats tighten your grip."
+    },
+    {
+        "stageID": "3",
+        "stageName": "DeadEnd Valley",
+        "descript": "It is literally a “Dead End Valley” There is nothing to gain even if you clear this. And TONS OF ENEMIES ARE TARGETTING YOU!!"
+    },
+    {
+        "stageID": "4",
+        "stageName": "Darkest Dungeon",
+        "descript": "The end point of your journey, the boss is waiting for you."
+    }
+]

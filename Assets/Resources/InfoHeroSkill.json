@@ -1,0 +1,82 @@
+[
+    {
+        "heroName": "Warrior",
+        "skillSlot": "0",
+        "descript": "(Target) Rush - Jump and Smash"
+    },
+    {
+        "heroName": "Warrior",
+        "skillSlot": "1",
+        "descript": "(Active) Reduce - Reduce Damage"
+    },
+    {
+        "heroName": "Warrior",
+        "skillSlot": "2",
+        "descript": "(NonTarget) Throw Shield - Throw Shield and Hit"
+    },
+    {
+        "heroName": "Warrior",
+        "skillSlot": "3",
+        "descript": "(Active) WheelWind - Slash All around Hero"
+    },
+    {
+        "heroName": "Archer",
+        "skillSlot": "0",
+        "descript": "(Target) Triplet - Shoot three Arrow"
+    },
+    {
+        "heroName": "Archer",
+        "skillSlot": "1",
+        "descript": "(Active) Focus - Increase Attack Speed"
+    },
+    {
+        "heroName": "Archer",
+        "skillSlot": "2",
+        "descript": "(NonTarget) Escape - Escape from Enemies"
+    },
+    {
+        "heroName": "Archer",
+        "skillSlot": "3",
+        "descript": "(NonTarget) Penetrate - Shoot bigger Arrow and Penetrate Enemies"
+    },
+    {
+        "heroName": "Wizard",
+        "skillSlot": "0",
+        "descript": "(Target) Meteo - Summon Meteor and hit around Enemies"
+    },
+    {
+        "heroName": "Wizard",
+        "skillSlot": "1",
+        "descript": "(Target) Freeze - Freeze Enemy for seconds"
+    },
+    {
+        "heroName": "Wizard",
+        "skillSlot": "2",
+        "descript": "(NonTarget) Lightining - Shoot Three Spread Lightining Penetrate Enemies"
+    },
+    {
+        "heroName": "Wizard",
+        "skillSlot": "3",
+        "descript": "(Active)"
+    },
+    {
+        "heroName": "Healer",
+        "skillSlot": "0",
+        "descript": "(Active) Heal - Restoring Current Target as 50% MaxHP"
+    },
+    {
+        "heroName": "Healer",
+        "skillSlot": "1",
+        "descript": "(Active) Attack Buff - Increase Attack Current Target"
+    },
+    {
+        "heroName": "Healer",
+        "skillSlot": "2",
+        "descript": "(Active) Holy Cows - Summon Thres Cows, Last Cow more powerful."
+    },
+    {
+        "heroName": "Healer",
+        "skillSlot": "3",
+        "descript": "(Active) Invincible -  Current Target no more hit"
+    }
+]
