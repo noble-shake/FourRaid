@@ -2379,7 +2379,7 @@ MonoBehaviour:
   BtnPlayer3: {fileID: 2116946740}
   BtnPlayer4: {fileID: 1606403072}
   BtnCharacterMenuBack: {fileID: 1753405787}
-  StatuePos: {x: -5, y: 0, z: 0}
+  StatuePos: {x: -5, y: 0, z: -1}
   Player1SkillIcons:
   - {fileID: 21300000, guid: 2a5c892bdd014164da633b8c6fd0f246, type: 3}
   - {fileID: 21300000, guid: a2563f2b8dbc4044b9a50537d3a29962, type: 3}
