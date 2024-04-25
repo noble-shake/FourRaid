@@ -30,9 +30,9 @@ public class StageInfo
 
 
 
-public class sceneManager : MonoBehaviour
+public class SceneMenu : MonoBehaviour
 {
-    public static sceneManager instance;
+    public static SceneMenu instance;
 
     [Header("MainMenu")]
     [SerializeField] GameObject MainMenuObj;

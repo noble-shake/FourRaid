@@ -13,7 +13,7 @@ public class RangedArcherSpell4 : MonoBehaviour
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("enemy")) {
-            EnemyScript enemySc = collision.GetComponent<EnemyScript>();
+            EnemyScript enemySc = collision.transform.parent.gameObject.GetComponent<EnemyScript>();
             enemySc.hitHp(playerID, damage, playerAtkAggro);
         }
     }

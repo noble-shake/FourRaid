@@ -65,7 +65,7 @@ public class PlayerWarrior: PlayerScript
 
     void Start()
     {
-
+        anim = GetComponent<Animator>();
     }
 
     public override void setSpellCooltime(int _input) {
@@ -177,6 +177,7 @@ public class PlayerWarrior: PlayerScript
 
         if (AttackRangedOn) return;
 
+        anim.SetTrigger("Move");
         Vector3 convertedPos = MovePos;
         if (!isCommandedAttack) 
         {
@@ -187,6 +188,7 @@ public class PlayerWarrior: PlayerScript
 
         if (Vector2.Distance(convertedPos, transform.position) < 0.001f)
         {
+            isCommandedMove = false;
             return;
         }
 
@@ -212,10 +214,11 @@ public class PlayerWarrior: PlayerScript
         Vector2 EnemyPos = EnemyObject.transform.position;
         if (Mathf.Abs(MovePos.x - transform.position.x) < 2f || Mathf.Abs(MovePos.y - transform.position.y) > 1f)
         {
+            anim.SetTrigger("Move");
             Vector2 tempLeftPos = EnemyPos;
-            tempLeftPos.x = tempLeftPos.x - 3f;
+            tempLeftPos.x = tempLeftPos.x - 2f;
             Vector2 tempRightPos = EnemyPos;
-            tempRightPos.x = tempRightPos.x + 3f;
+            tempRightPos.x = tempRightPos.x + 2f;
             Vector2 tempPos = Vector2.Distance(tempLeftPos, transform.position) < Vector2.Distance(tempRightPos, transform.position) ? tempLeftPos : tempRightPos;
 
             transform.position = Vector2.MoveTowards(transform.position, tempPos, speed * Time.deltaTime);
@@ -227,8 +230,10 @@ public class PlayerWarrior: PlayerScript
         if (AttackTime < playerAtkSpeed) return;
 
         if (AttackOn) {
+            anim.SetTrigger("Attack");
             EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, playerAtk, playerAtkAggro);
             AttackTime = 0f;
+
         }
 
 
@@ -330,7 +335,7 @@ public class PlayerWarrior: PlayerScript
         {
             case HitBoxScript.enumHitType.EnemyCheck:
                 if (isCommandedAttack && collision.CompareTag("enemy")) {
-                    EnemyObject = collision.gameObject;
+                    EnemyObject = collision.transform.parent.gameObject;
                     AttackRangedOn = true;
                     
                 }
@@ -347,7 +352,7 @@ public class PlayerWarrior: PlayerScript
             case HitBoxScript.enumHitType.EnemyCheck:
                 if (isCommandedAttack && collision.CompareTag("enemy"))
                 {
-                    EnemyObject = collision.gameObject;
+                    EnemyObject = collision.transform.parent.gameObject;
                     AttackRangedOn = true;
                 }
 
@@ -355,7 +360,7 @@ public class PlayerWarrior: PlayerScript
                     bool existCheck = false; ;
                     for (int inum = 0; inum < WheelWindTargets.Count; inum++)
                     {
-                        if (WheelWindTargets[inum].GetComponent<EnemyScript>().getEnemyID() == collision.gameObject.GetComponent<EnemyScript>().getEnemyID())
+                        if (WheelWindTargets[inum].GetComponent<EnemyScript>().getEnemyID() == collision.transform.parent.gameObject.GetComponent<EnemyScript>().getEnemyID())
                         {
                             existCheck = true;
                             break;
@@ -364,7 +369,7 @@ public class PlayerWarrior: PlayerScript
 
                     if (!existCheck)
                     {
-                        WheelWindTargets.Add(collision.gameObject.GetComponent<EnemyScript>());
+                        WheelWindTargets.Add(collision.transform.parent.gameObject.GetComponent<EnemyScript>());
                     }
                     
                 }
@@ -386,7 +391,7 @@ public class PlayerWarrior: PlayerScript
                 if (collision.CompareTag("enemy"))
                 {
                     for (int inum = 0; inum < WheelWindTargets.Count; inum++) {
-                        if (WheelWindTargets[inum].GetComponent<EnemyScript>().getEnemyID() == collision.gameObject.GetComponent<EnemyScript>().getEnemyID()) {
+                        if (WheelWindTargets[inum].GetComponent<EnemyScript>().getEnemyID() == collision.transform.parent.gameObject.GetComponent<EnemyScript>().getEnemyID()) {
                             WheelWindTargets.RemoveAt(inum);
                             break;
                         }
@@ -467,18 +472,16 @@ public class PlayerWarrior: PlayerScript
         tempRightPos.x += 3f;
 
         Vector2 TargetPos = Vector2.Distance(transform.position, tempLeftPos) > Vector2.Distance(transform.position, tempRightPos) ? tempRightPos : tempLeftPos;
-        MovePos = TargetPos;
-
-
         transform.position = Vector2.MoveTowards(transform.position, TargetPos, Time.deltaTime * 16f);
 
-        if (Vector2.Distance(TargetPos, transform.position) < 0.1f)
+        Debug.Log(Vector2.Distance(TargetPos, transform.position));
+        if (Vector2.Distance(TargetPos, transform.position) < 1.5f)
         {
             EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, Spell1Atk, Spell1Aggro);
             ActivatedSpell = -1;
             isSpellPlaying = false;
             isCommandedAttack = true;
-            isCommandedMove = true;
+            isCommandedMove = false;
             AttackRangedOn = true;
             playerAttack();
             return;

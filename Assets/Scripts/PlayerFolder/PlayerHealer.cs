@@ -63,7 +63,7 @@ public class PlayerHealer : PlayerScript
 
     void Start()
     {
-
+        anim = GetComponent<Animator>();
     }
 
     public override void setSpellCooltime(int _input)
@@ -354,7 +354,7 @@ public class PlayerHealer : PlayerScript
             case HitBoxScript.enumHitType.EnemyCheck:
                 if (isCommandedAttack && collision.CompareTag("enemy"))
                 {
-                    EnemyObject = collision.gameObject;
+                    EnemyObject = collision.transform.parent.gameObject;
                     AttackRangedOn = true;
                 }
 
@@ -363,7 +363,7 @@ public class PlayerHealer : PlayerScript
                     bool existCheck = false; ;
                     for (int inum = 0; inum < HealColliderEnemies.Count; inum++)
                     {
-                        if (HealColliderEnemies[inum].GetComponent<EnemyScript>().getEnemyID() == collision.gameObject.GetComponent<EnemyScript>().getEnemyID())
+                        if (HealColliderEnemies[inum].GetComponent<EnemyScript>().getEnemyID() == collision.transform.parent.gameObject.GetComponent<EnemyScript>().getEnemyID())
                         {
                             existCheck = true;
                             break;
@@ -372,7 +372,7 @@ public class PlayerHealer : PlayerScript
 
                     if (!existCheck)
                     {
-                        HealColliderEnemies.Add(collision.gameObject.GetComponent<EnemyScript>());
+                        HealColliderEnemies.Add(collision.transform.parent.gameObject.GetComponent<EnemyScript>());
                     }
 
                 }
@@ -395,7 +395,7 @@ public class PlayerHealer : PlayerScript
                 {
                     for (int inum = 0; inum < HealColliderEnemies.Count; inum++)
                     {
-                        if (HealColliderEnemies[inum].GetComponent<EnemyScript>().getEnemyID() == collision.gameObject.GetComponent<EnemyScript>().getEnemyID())
+                        if (HealColliderEnemies[inum].GetComponent<EnemyScript>().getEnemyID() == collision.transform.parent.gameObject.GetComponent<EnemyScript>().getEnemyID())
                         {
                             HealColliderEnemies.RemoveAt(inum);
                             break;
@@ -529,19 +529,22 @@ public class PlayerHealer : PlayerScript
 
     IEnumerator SummonCow()
     {
+        Vector3 margin = AttackCollider.transform.position;
+        margin.y -= 2f;
+        margin.z = -2f;
 
-        RangedCow objCow = Instantiate(minnerCow, AttackCollider.transform.position, AttackCollider.transform.rotation);
-        objCow.GetComponent<RangedCow>().SetPlayerRangedCow(playerID, Spell3Atk, Spell3Aggro, HealColliderEnemies);
+        RangedCow objCow = Instantiate(minnerCow, margin, AttackCollider.transform.rotation);
+        objCow.GetComponent<RangedCow>().SetPlayerRangedCow(playerID, Spell3Atk, Spell3Aggro * 0.2f, HealColliderEnemies);
 
-
-        yield return new WaitForSeconds(0.8f);
-
-        objCow= Instantiate(minnerCow, AttackCollider.transform.position, AttackCollider.transform.rotation);
-        objCow.GetComponent<RangedCow>().SetPlayerRangedCow(playerID, Spell3Atk, Spell3Aggro, HealColliderEnemies);
 
         yield return new WaitForSeconds(0.8f);
 
-        objCow= Instantiate(blackCow, AttackCollider.transform.position, AttackCollider.transform.rotation);
+        objCow= Instantiate(minnerCow, margin, AttackCollider.transform.rotation);
+        objCow.GetComponent<RangedCow>().SetPlayerRangedCow(playerID, Spell3Atk, Spell3Aggro * 0.5f, HealColliderEnemies);
+
+        yield return new WaitForSeconds(0.8f);
+
+        objCow= Instantiate(blackCow, margin, AttackCollider.transform.rotation);
         objCow.GetComponent<RangedCow>().SetPlayerRangedCow(playerID, Spell3Atk * 2, Spell3Aggro, HealColliderEnemies);
     }
 

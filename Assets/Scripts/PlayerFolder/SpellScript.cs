@@ -190,7 +190,7 @@ public class SpellScript: MonoBehaviour
                 for (int inum = 0; inum < hit.Length; inum++) {
                     if (hit[inum].collider.CompareTag("enemy")) {
                         isCanceled = false;
-                        privilegedPlayer.GetComponent<PlayerScript>().TargettingSpellActivate(spellSlotID, hit[inum].collider.gameObject);
+                        privilegedPlayer.GetComponent<PlayerScript>().TargettingSpellActivate(spellSlotID, hit[inum].collider.transform.parent.gameObject);
                     }
                     else if (hit[inum].collider.CompareTag("player") && privilegedPlayer.name == "PlayerHealer") {
                         isCanceled = false;

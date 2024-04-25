@@ -53,7 +53,7 @@ public class PlayerArcher: PlayerScript
 
     void Start()
     {
-
+        anim = GetComponent<Animator>();
     }
     public override void setSpellCooltime(int _input)
     {
@@ -289,7 +289,7 @@ public class PlayerArcher: PlayerScript
                 foreach (RaycastHit2D target in hit) {
                     if (target.collider.CompareTag("enemy"))
                     {
-                        EnemyObject = target.collider.gameObject;
+                        EnemyObject = target.collider.transform.parent.gameObject;
                         Debug.Log("Enemy Attack?");
                         isCommandedMove = false;
                         isCommandedAttack = true;
@@ -319,7 +319,7 @@ public class PlayerArcher: PlayerScript
         {
             case HitBoxScript.enumHitType.EnemyCheck:
                 if (isCommandedAttack && collision.CompareTag("enemy")) {
-                    EnemyObject = collision.gameObject;
+                    EnemyObject = collision.transform.parent.gameObject;
                     AttackRangedOn = true;
                     
                 }

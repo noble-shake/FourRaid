@@ -34,7 +34,7 @@ public class PlayerWizard: PlayerScript
 
     void Start()
     {
-
+        anim = GetComponent<Animator>();
     }
 
     void TimeFlowing() {

@@ -20,7 +20,7 @@ public class RangedAttack : MonoBehaviour
         {
             isHit = true;
 
-            EnemyScript enemySc = collision.GetComponent<EnemyScript>();
+            EnemyScript enemySc = collision.transform.parent.gameObject.GetComponent<EnemyScript>();
             enemySc.hitHp(playerID, damage, playerAtkAggro);
 
             Destroy(gameObject);
@@ -29,7 +29,7 @@ public class RangedAttack : MonoBehaviour
         {
             isHit = true;
 
-            PlayerScript playerSc = collision.GetComponent<PlayerScript>();
+            PlayerScript playerSc = collision.transform.parent.gameObject.GetComponent<PlayerScript>();
             playerSc.hitHp(damage);
 
             Destroy(gameObject);

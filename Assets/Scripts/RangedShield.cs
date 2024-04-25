@@ -12,7 +12,7 @@ public class RangedShield : MonoBehaviour
 
     public void AttackTriggerEnter(Collider2D collision)
     {
-        EnemyScript enemySc = collision.GetComponent<EnemyScript>();
+        EnemyScript enemySc = collision.transform.parent.gameObject.GetComponent<EnemyScript>();
         enemySc.hitHp(playerID, damage, playerAtkAggro);
 
         Destroy(gameObject);

@@ -56,6 +56,9 @@ public class PlayerScript : MonoBehaviour
     protected float Spell3ChargingTime = 0f;
     protected float Spell4ChargingTime = 0f;
 
+    [Header("External")]
+    [SerializeField] protected Animator anim;
+
 
     //public SpellScript overrideSpell(SpellScript _input) {
     //    // _input = _input.GetComponent<SpellWarrior1>();
@@ -90,6 +93,7 @@ public class PlayerScript : MonoBehaviour
     public void playerSelect() {
         isClicked = true;
         IndicatorPlayer.transform.GetChild(0).transform.gameObject.SetActive(true);
+        anim.SetTrigger("Select");
     }
 
     public void playerSelectCancel() {
