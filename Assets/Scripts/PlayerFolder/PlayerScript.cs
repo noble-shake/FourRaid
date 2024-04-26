@@ -93,7 +93,9 @@ public class PlayerScript : MonoBehaviour
     public void playerSelect() {
         isClicked = true;
         IndicatorPlayer.transform.GetChild(0).transform.gameObject.SetActive(true);
-        anim.SetTrigger("Select");
+
+        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Select"))
+            anim.SetTrigger("Select");
     }
 
     public void playerSelectCancel() {

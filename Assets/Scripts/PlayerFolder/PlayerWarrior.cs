@@ -144,7 +144,9 @@ public class PlayerWarrior: PlayerScript
         {
             switch (ActivatedSpell) {
                 case 0:
-                    anim.SetTrigger("Spell1");
+                    anim.ResetTrigger("Move");
+                    anim.ResetTrigger("Attack");
+                    
                     Spell1();
                     break;
                 case 1:
@@ -178,7 +180,8 @@ public class PlayerWarrior: PlayerScript
 
         if (AttackRangedOn) return;
 
-        anim.SetTrigger("Move");
+        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Move"))
+            anim.SetTrigger("Move");
         Vector3 convertedPos = MovePos;
         if (!isCommandedAttack) 
         {
@@ -215,7 +218,8 @@ public class PlayerWarrior: PlayerScript
         Vector2 EnemyPos = EnemyObject.transform.position;
         if (Mathf.Abs(MovePos.x - transform.position.x) < 2f || Mathf.Abs(MovePos.y - transform.position.y) > 1f)
         {
-            anim.SetTrigger("Move");
+            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Move"))
+                anim.SetTrigger("Move");
             Vector2 tempLeftPos = EnemyPos;
             tempLeftPos.x = tempLeftPos.x - 2f;
             Vector2 tempRightPos = EnemyPos;
@@ -235,7 +239,8 @@ public class PlayerWarrior: PlayerScript
             transform.GetChild(0).localScale = looking;
             transform.GetChild(1).localScale = looking;
 
-            anim.SetTrigger("Attack");
+            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                anim.SetTrigger("Attack");
             EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, playerAtk, playerAtkAggro);
             AttackTime = 0f;
 
@@ -473,7 +478,8 @@ public class PlayerWarrior: PlayerScript
 
         if (Spell1ChargingTime > 0f) return;
         isCommandedMove = false;
-
+        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Spell1"))
+            anim.SetTrigger("Spell1");
         // Jump Animation
         Vector2 tempPos = EnemyObject.transform.position;
         Vector2 tempLeftPos = tempPos;
