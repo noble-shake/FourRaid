@@ -33,7 +33,7 @@ public class HitBoxScript : MonoBehaviour
         }
         else if (hitType == enumHitType.EnemyCheck)
         {
-            ownedObject.GetComponent<PlayerScript>().AttackTriggerEnter(hitType, collision); ;
+            ownedObject.GetComponent<PlayerScript>().AttackTriggerStay(hitType, collision); ;
         }
     }
 

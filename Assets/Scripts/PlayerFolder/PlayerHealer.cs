@@ -171,6 +171,22 @@ public class PlayerHealer : PlayerScript
     }
 
 
+    public override void hitHp(float _value)
+    {
+        playerCurHp -= _value;
+        if (playerCurHp < 0)
+        {
+            // die
+            playerCurHp = 0;
+        }
+        HPBarUIVisbile();
+        if (HPBarUI.gameObject.activeSelf)
+        {
+            HPBarUI.value = playerCurHp;
+        }
+    }
+
+
     // MAIN SCRIPT
 
     private void playerMove()
@@ -322,7 +338,7 @@ public class PlayerHealer : PlayerScript
             case HitBoxScript.enumHitType.EnemyCheck:
                 if (isCommandedAttack && collision.CompareTag("enemy"))
                 {
-                    EnemyObject = collision.gameObject;
+                    EnemyObject = collision.transform.parent.gameObject;
 
                 }
                 break;

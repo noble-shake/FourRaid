@@ -144,6 +144,7 @@ public class PlayerWarrior: PlayerScript
         {
             switch (ActivatedSpell) {
                 case 0:
+                    anim.SetTrigger("Spell1");
                     Spell1();
                     break;
                 case 1:
@@ -230,11 +231,16 @@ public class PlayerWarrior: PlayerScript
         if (AttackTime < playerAtkSpeed) return;
 
         if (AttackOn) {
+            Vector3 looking = EnemyObject.transform.position.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+            transform.GetChild(0).localScale = looking;
+            transform.GetChild(1).localScale = looking;
+
             anim.SetTrigger("Attack");
             EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, playerAtk, playerAtkAggro);
             AttackTime = 0f;
 
         }
+
 
 
     }
@@ -444,7 +450,9 @@ public class PlayerWarrior: PlayerScript
         ActivatedSpell = _num;
         EnemyObject = _targetObject;
 
+        
         if (_num == 0) {
+            MovePos = _targetObject.transform.position;
             Spell1ChargingTime = 1f;
         }
 
@@ -461,6 +469,8 @@ public class PlayerWarrior: PlayerScript
 
 
         // Charging Animation
+        
+
         if (Spell1ChargingTime > 0f) return;
         isCommandedMove = false;
 
@@ -481,10 +491,9 @@ public class PlayerWarrior: PlayerScript
             ActivatedSpell = -1;
             isSpellPlaying = false;
             isCommandedAttack = true;
-            isCommandedMove = false;
+            isCommandedMove = true;
             AttackRangedOn = true;
             playerAttack();
-            return;
         }
     }
 
