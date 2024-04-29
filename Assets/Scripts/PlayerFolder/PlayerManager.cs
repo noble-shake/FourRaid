@@ -97,10 +97,13 @@ public class PlayerManager : MonoBehaviour
 
     private void UnitSelect()
     {
+        if (!GameManager.instance.Playable()) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         // RaycastHit[] hits = Physics.RaycastAll(ray);
         RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray);
+
+
 
         if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {

@@ -33,6 +33,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject GameStartPoint;
     [SerializeField] GameObject GameVictoryPoint;
 
+    public bool Playable() {
+        return !eventOn;
+    }
+
     private void Awake()
     {
         if (instance == null)

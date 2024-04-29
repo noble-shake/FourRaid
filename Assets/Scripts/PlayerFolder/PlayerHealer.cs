@@ -349,22 +349,6 @@ public class PlayerHealer : PlayerScript
         }
     }
 
-    //public override void AttackTriggerStay(HitBoxScript.enumHitType _hitType, Collider2D collision)
-    //{
-    //    switch (_hitType)
-    //    {
-    //        case HitBoxScript.enumHitType.EnemyCheck:
-    //            if (isCommandedAttack && collision.CompareTag("enemy"))
-    //            {
-    //                EnemyObject = collision.gameObject;
-    //                AttackRangedOn = true;
-
-    //            }
-    //            break;
-
-    //    }
-    //}
-
 
     public override void AttackTriggerEnter(HitBoxScript.enumHitType _hitType, Collider2D collision)
     {
@@ -578,8 +562,27 @@ public class PlayerHealer : PlayerScript
 
     public void Spell4()
     {
+            // Great Heal, Resotre 50% MaxHP
 
-    }
+            // animation
+
+            if (Spell1ChargingTime > 0f) return;
+            isCommandedMove = false;
+
+            // Buff : damage reduce & aggro max
+
+            ActivatedSpell = -1;
+            isSpellPlaying = false;
+
+            AttackCollider.transform.position = HeroObject.transform.position;
+            float hpGauge = HeroObject.GetComponent<PlayerScript>().getPlayerMaxHp();
+            HeroObject.GetComponent<PlayerScript>().healHp(hpGauge);
+            isCommandedAttack = true;
+
+            Vector3 looking = HeroObject.transform.position.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+            transform.GetChild(0).localScale = looking;
+            transform.GetChild(1).localScale = looking;
+        }
 
 
     public override float SpellCooltimeCheck(int _input)

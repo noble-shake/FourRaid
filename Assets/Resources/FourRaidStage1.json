@@ -6,21 +6,21 @@
         "boss": "-1"
     },
     {
-        "delay": "8",
-        "goblins": "5",
+        "delay": "10",
+        "goblins": "4",
         "bats": "0",
         "boss": "-1"
     },
     {
         "delay": "12",
-        "goblins": "4",
+        "goblins": "3",
         "bats": "1",
         "boss": "-1"
     },
     {
         "delay": "16",
         "goblins": "0",
-        "bats": "2",
+        "bats": "1",
         "boss": "0"
     }
 ]
