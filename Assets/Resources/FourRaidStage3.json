@@ -1,0 +1,38 @@
+[
+  {
+    "delay": "5",
+    "goblins": "12",
+    "bats": "0",
+    "boss": "2"
+  },
+  {
+    "delay": "15",
+    "goblins": "0",
+    "bats": "4",
+    "boss": "-1"
+  },
+  {
+    "delay": "20",
+    "goblins": "0",
+    "bats": "4",
+    "boss": "1"
+  },
+  {
+    "delay": "21",
+    "goblins": "0",
+    "bats": "0",
+    "boss": "1"
+  },
+  {
+    "delay": "30",
+    "goblins": "10",
+    "bats": "0",
+    "boss": "0"
+  },
+  {
+    "delay": "45",
+    "goblins": "0",
+    "bats": "1",
+    "boss": "2"
+  }
+]

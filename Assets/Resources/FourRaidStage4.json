@@ -1,0 +1,20 @@
+[
+  {
+    "delay": "5",
+    "goblins": "0",
+    "bats": "1",
+    "boss": "2"
+  },
+  {
+    "delay": "6",
+    "goblins": "3",
+    "bats": "0",
+    "boss": "1"
+  },
+  {
+    "delay": "20",
+    "goblins": "0",
+    "bats": "0",
+    "boss": "3"
+  }
+]
