@@ -247,6 +247,7 @@ public class Boss4 : EnemyScript
                     Meteo.GetComponent<BossMeteor>().SetMeteor(Spell1Atk * 1.5f, 2f);
                 }
             }
+            Spell1Counter = 0;
         }
 
         Vector3 looking = enemyAggroTarget.transform.position.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
