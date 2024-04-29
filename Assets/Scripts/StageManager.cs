@@ -145,6 +145,7 @@ public class StageManager : MonoBehaviour
     }
 
     //PlayerPrefs
+
     public void StageUnlock(int _stageID) {
         switch (_stageID) {
             case 0:
