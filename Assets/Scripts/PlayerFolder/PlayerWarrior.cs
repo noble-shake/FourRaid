@@ -249,7 +249,7 @@ public class PlayerWarrior: PlayerScript
     }
 
     public void commandAttack(GameObject _enemy=null) {
-        if (_enemy != null)
+        if (_enemy != null && gameObject.activeSelf)
         {
             EnemyObject = _enemy;
             BattlePoint = EnemyObject.GetComponent<EnemyScript>().getEnemyBattlePoint(transform.position);
