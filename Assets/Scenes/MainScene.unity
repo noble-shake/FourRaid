@@ -6037,8 +6037,8 @@ MonoBehaviour:
   SpawnTimes: []
   JsonStage1: {fileID: 4900000, guid: 1816d21fd8aeae745875e2b69368761f, type: 3}
   JsonStage2: {fileID: 4900000, guid: 4f2e632f7559ed94c88e79596e6bcb9e, type: 3}
-  JsonStage3: {fileID: 4900000, guid: 1816d21fd8aeae745875e2b69368761f, type: 3}
-  JsonStage4: {fileID: 4900000, guid: 1816d21fd8aeae745875e2b69368761f, type: 3}
+  JsonStage3: {fileID: 4900000, guid: a26edd22967c46641862d03c1e59cbba, type: 3}
+  JsonStage4: {fileID: 4900000, guid: ac8b7025bfbb89845aea8c7c4a0da971, type: 3}
   GameStartUI: {fileID: 0}
   GameClearUI: {fileID: 0}
   GameOverUI: {fileID: 0}

@@ -2,13 +2,13 @@
   {
     "delay": "3",
     "goblins": "0",
-    "bats": "0",
-    "boss": "3"
+    "bats": "4",
+    "boss": "-1"
   },
   {
-    "delay": "4",
-    "goblins": "0",
+    "delay": "12",
+    "goblins": "8",
     "bats": "0",
-    "boss": "1"
+    "boss": "2"
   }
 ]
