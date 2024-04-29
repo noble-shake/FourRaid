@@ -419,6 +419,9 @@ public class PlayerArcher: PlayerScript
         {
             // die
             playerCurHp = 0;
+            isAlive = false;
+            // Destroy(gameObject);
+            gameObject.SetActive(false);
         }
         HPBarUIVisbile();
         if (HPBarUI.gameObject.activeSelf)

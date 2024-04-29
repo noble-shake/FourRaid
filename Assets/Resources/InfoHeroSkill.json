@@ -42,23 +42,23 @@
     {
         "heroName": "Wizard",
         "skillSlot": "0",
-        "descript": "(Target) Meteo - Summon Meteor and hit around Enemies"
+        "descript": "(NonTarget) Meteo - Summon Meteor and hit around Enemies, his normal skill"
     },
     {
         "heroName": "Wizard",
         "skillSlot": "1",
-        "descript": "(Target) Freeze - Freeze Enemy for seconds"
+        "descript": "(NonTarget) Freeze - Freeze Enemy for seconds"
     },
     {
         "heroName": "Wizard",
         "skillSlot": "2",
         "descript": "(NonTarget) Lightining - Shoot Three Spread Lightining Penetrate Enemies"
     },
-    {
-        "heroName": "Wizard",
-        "skillSlot": "3",
-        "descript": "(Active)"
-    },
+  {
+    "heroName": "Wizard",
+    "skillSlot": "3",
+    "descript": "(NonTarget) Summon Dragon -  I will tear your world APART. I AM THE CATACLYSM!"
+  },
     {
         "heroName": "Healer",
         "skillSlot": "0",

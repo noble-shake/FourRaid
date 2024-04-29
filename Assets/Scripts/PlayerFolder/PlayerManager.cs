@@ -67,15 +67,15 @@ public class PlayerManager : MonoBehaviour
         { 
             Destroy(gameObject);
         }
-
-    }
-    void Start()
-    {
         spells = new List<SpellScript>();
         SpellScript[] rangeData = spellUI.transform.GetComponentsInChildren<SpellScript>(true);
         spells.AddRange(rangeData);
         //spells.RemoveAt(0);
         spellUIDeActive();
+    }
+    void Start()
+    {
+
     }
 
     void Update()
@@ -85,6 +85,10 @@ public class PlayerManager : MonoBehaviour
 
     public List<GameObject> getHeroesObjects() {
         return Heroes;
+    }
+
+    public bool getHeroAlive(int _num) {
+        return Heroes[_num].GetComponent<PlayerScript>().getPlayerAlive();
     }
 
     public void commandAttack() { }

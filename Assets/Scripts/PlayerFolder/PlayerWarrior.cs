@@ -38,11 +38,9 @@ public class PlayerWarrior: PlayerScript
     [SerializeField] float Spell4Aggro = 20f;
 
 
-
-
-
-
     [Header("Hit Collider")]
+    [SerializeField] bool AttackTriggerOn;
+    [SerializeField] Vector2 BattlePoint;
     [SerializeField] BoxCollider2D DetectCollider;
     [SerializeField] bool AttackRangedOn;
 
@@ -182,19 +180,24 @@ public class PlayerWarrior: PlayerScript
 
         if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Move"))
             anim.SetTrigger("Move");
-        Vector3 convertedPos = MovePos;
-        if (!isCommandedAttack) 
-        {
-            MovePos.z = Camera.main.transform.position.z;
-            convertedPos = Camera.main.ScreenToWorldPoint(MovePos);
-            convertedPos.z = transform.position.z;
-        }
 
-        if (Vector2.Distance(convertedPos, transform.position) < 0.001f)
+        Vector3 convertedPos;
+
+        MovePos.z = Camera.main.transform.position.z;
+        convertedPos = Camera.main.ScreenToWorldPoint(MovePos);
+        convertedPos.z = transform.position.z;
+
+        
+        if (EnemyObject != null) {
+            BattlePoint = EnemyObject.GetComponent<EnemyScript>().getEnemyBattlePoint(transform.position);
+            convertedPos = BattlePoint;
+        }
+        if (Vector2.Distance(convertedPos, transform.position) < 0.1f)
         {
             isCommandedMove = false;
             return;
         }
+        
 
         transform.position = Vector2.MoveTowards(transform.position, convertedPos, speed * Time.deltaTime);
 
@@ -209,27 +212,21 @@ public class PlayerWarrior: PlayerScript
     }
 
     private void playerAttack() {
-        if (!AttackRangedOn) return;
+        if (isCommandedMove) return;
 
         if (EnemyObject == null) return;
 
         bool AttackOn = false;
 
-        Vector2 EnemyPos = EnemyObject.transform.position;
-        if (Mathf.Abs(MovePos.x - transform.position.x) < 2f || Mathf.Abs(MovePos.y - transform.position.y) > 1f)
-        {
-            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Move"))
-                anim.SetTrigger("Move");
-            Vector2 tempLeftPos = EnemyPos;
-            tempLeftPos.x = tempLeftPos.x - 2f;
-            Vector2 tempRightPos = EnemyPos;
-            tempRightPos.x = tempRightPos.x + 2f;
-            Vector2 tempPos = Vector2.Distance(tempLeftPos, transform.position) < Vector2.Distance(tempRightPos, transform.position) ? tempLeftPos : tempRightPos;
+        BattlePoint = EnemyObject.GetComponent<EnemyScript>().getEnemyBattlePoint(transform.position);
 
-            transform.position = Vector2.MoveTowards(transform.position, tempPos, speed * Time.deltaTime);
+        
+        if (Vector2.Distance(transform.position, BattlePoint) < 4f)
+        {
+            AttackOn = true;
         }
         else {
-            AttackOn = true;
+            transform.position = Vector2.MoveTowards(transform.position, BattlePoint, speed * Time.deltaTime);
         }
 
         if (AttackTime < playerAtkSpeed) return;
@@ -243,11 +240,7 @@ public class PlayerWarrior: PlayerScript
                 anim.SetTrigger("Attack");
             EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, playerAtk, playerAtkAggro);
             AttackTime = 0f;
-
         }
-
-
-
     }
 
     public virtual void commandMove(Vector3 _pos) {
@@ -255,10 +248,14 @@ public class PlayerWarrior: PlayerScript
         MovePos = _pos;
     }
 
-    //public override void commandAttack(GameObject _enemy) {
-    //    // isAttackPlaying = true;
-    //    Debug.Log("Attack On?");
-    //}
+    public void commandAttack(GameObject _enemy=null) {
+        if (_enemy != null)
+        {
+            EnemyObject = _enemy;
+            BattlePoint = EnemyObject.GetComponent<EnemyScript>().getEnemyBattlePoint(transform.position);
+        }
+        
+    }
 
     public override void commandSpell(int _value) { }
 
@@ -300,27 +297,27 @@ public class PlayerWarrior: PlayerScript
     {
         if (isClicked && isPlayerDragToMove && isPlayerDownMouse)
         {
+            EnemyObject = null;
+            AttackRangedOn = false;
             isCommandedAttack = false;
-            commandMove(Input.mousePosition);
             isPlayerDragToMove = false;
+
+            commandMove(Input.mousePosition);
+            
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             RaycastHit2D[] hit = Physics2D.GetRayIntersectionAll(ray);
-            AttackRangedOn = false;
+            
 
             if (hit != null) {
                 foreach (RaycastHit2D target in hit) {
                     if (target.collider.CompareTag("enemy"))
                     {
-                        Debug.Log("Enemy Attack?");
                         isCommandedAttack = true;
                         if (!AttackRangedOn)
                         {
-                            commandMove(target.collider.transform.position);
-                        }
-                        else {
-                            playerAttack();
+                            commandAttack(target.collider.transform.parent.gameObject);
                         }
                     }
                 }
@@ -345,11 +342,10 @@ public class PlayerWarrior: PlayerScript
         switch (_hitType)
         {
             case HitBoxScript.enumHitType.EnemyCheck:
-                if (isCommandedAttack && collision.CompareTag("enemy")) {
-                    EnemyObject = collision.transform.parent.gameObject;
-                    AttackRangedOn = true;
+                //if (isCommandedAttack && collision.CompareTag("enemy")) {
+                //    EnemyObject = collision.transform.parent.gameObject;
                     
-                }
+                //}
                 break;
 
         }
@@ -361,11 +357,11 @@ public class PlayerWarrior: PlayerScript
         switch (_hitType) 
         {
             case HitBoxScript.enumHitType.EnemyCheck:
-                if (isCommandedAttack && collision.CompareTag("enemy"))
-                {
-                    EnemyObject = collision.transform.parent.gameObject;
-                    AttackRangedOn = true;
-                }
+                //if (isCommandedAttack && collision.CompareTag("enemy"))
+                //{
+                //    EnemyObject = collision.transform.parent.gameObject;
+                    
+                //}
 
                 if (collision.CompareTag("enemy")) {
                     bool existCheck = false; ;
@@ -394,9 +390,13 @@ public class PlayerWarrior: PlayerScript
         switch (_hitType)
         {
             case HitBoxScript.enumHitType.EnemyCheck:
-                if (isCommandedAttack) 
+                if (!isCommandedMove && isCommandedAttack && EnemyObject != null)
                 {
-                    playerAttack();
+                    commandAttack(EnemyObject);
+                }
+                else if (!isCommandedMove && isCommandedAttack && EnemyObject == null) {
+                    EnemyObject = collision.transform.parent.gameObject;
+                    commandAttack(EnemyObject);
                 }
                 
                 if (collision.CompareTag("enemy"))
@@ -477,29 +477,25 @@ public class PlayerWarrior: PlayerScript
         
 
         if (Spell1ChargingTime > 0f) return;
+
         isCommandedMove = false;
         if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Spell1"))
             anim.SetTrigger("Spell1");
         // Jump Animation
-        Vector2 tempPos = EnemyObject.transform.position;
-        Vector2 tempLeftPos = tempPos;
-        Vector2 tempRightPos = tempPos;
-        tempLeftPos.x -= 3f;
-        tempRightPos.x += 3f;
 
-        Vector2 TargetPos = Vector2.Distance(transform.position, tempLeftPos) > Vector2.Distance(transform.position, tempRightPos) ? tempRightPos : tempLeftPos;
-        transform.position = Vector2.MoveTowards(transform.position, TargetPos, Time.deltaTime * 16f);
+        BattlePoint = EnemyObject.GetComponent<EnemyScript>().getEnemyBattlePoint(transform.position);
 
-        Debug.Log(Vector2.Distance(TargetPos, transform.position));
-        if (Vector2.Distance(TargetPos, transform.position) < 1.5f)
+        transform.position = Vector2.MoveTowards(transform.position, BattlePoint, Time.deltaTime * 16f);
+
+        if (Vector2.Distance(BattlePoint, transform.position) < 1.5f)
         {
             EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, Spell1Atk, Spell1Aggro);
             ActivatedSpell = -1;
             isSpellPlaying = false;
             isCommandedAttack = true;
-            isCommandedMove = true;
+            isCommandedMove = false;
             AttackRangedOn = true;
-            playerAttack();
+            commandAttack(EnemyObject);
         }
     }
 
@@ -517,6 +513,9 @@ public class PlayerWarrior: PlayerScript
         {
             // die
             playerCurHp = 0;
+            isAlive = false;
+            // Destroy(gameObject);
+            gameObject.SetActive(false);
         }
         HPBarUIVisbile();
         if (HPBarUI.gameObject.activeSelf)

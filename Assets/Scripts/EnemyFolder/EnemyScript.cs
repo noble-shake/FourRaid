@@ -3,6 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
+public class EnemyInfo
+{
+    public int enemyID;
+    public float enemyMaxHp;
+    public float enemyAtk;
+    public float enemyAtkSpeed;
+}
+
 public class EnemyScript : MonoBehaviour
 {
     [Header("Enemy Stat")]
@@ -16,8 +25,10 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] protected int enemyAggroTargetID;
     [SerializeField] protected float[] enemyAggroGauge;
     [SerializeField] protected float speed;
+    [SerializeField] protected float originSpeed;
     [SerializeField] protected Vector3 MovePos;
     [SerializeField] protected List<GameObject> Heroes;
+    [SerializeField] protected bool prevented;
 
     [Header("Enemy Check")]
     [SerializeField] protected bool isClicked;
@@ -29,6 +40,8 @@ public class EnemyScript : MonoBehaviour
 
     [Header("External")]
     [SerializeField] protected float InteractTime;
+    [SerializeField] GameObject LeftBattleWall;
+    [SerializeField] GameObject RightBattleWall;
 
 
     public void HPBarUIVisbile()
@@ -43,7 +56,7 @@ public class EnemyScript : MonoBehaviour
         }
     }
 
-    protected virtual void ObjectInit() 
+    public virtual void ObjectInit() 
     {
         
     }
@@ -61,12 +74,14 @@ public class EnemyScript : MonoBehaviour
 
     public void TargetChangeCheck() {
 
+        AttackRangedOn = false;
+        List<GameObject> HeroObjects = PlayerManager.instance.getHeroesObjects();
         int maxOrder = 0;
         float temp = -1;
-        for(int i = 0; i < Heroes.Count; i++)
+        for(int i = 0; i < HeroObjects.Count; i++)
         {
             bool PlayerAliveCheck = false;
-            PlayerAliveCheck = Heroes[i].GetComponent<PlayerScript>().getPlayerAlive();
+            PlayerAliveCheck = PlayerManager.instance.getHeroAlive(i);
             if (temp < enemyAggroGauge[i] && PlayerAliveCheck) {
                 temp = enemyAggroGauge[i];
                 maxOrder = i;
@@ -88,14 +103,20 @@ public class EnemyScript : MonoBehaviour
         enemyAggroTarget = Heroes[enemyAggroTargetID];
     }
 
-    public void hitHp(int _playerID, float _value, float _aggro)
+    public virtual void hitHp(int _playerID, float _value, float _aggro)
     {
         enemyCurHp -= _value;
         if (enemyCurHp < 0)
         {
             // die
             enemyCurHp = 0;
-            Destroy(gameObject);
+
+            if (gameObject.activeSelf)
+            {
+                StageManager.instance.setClearCounter();
+            }
+            gameObject.SetActive(false);
+            
         }
         HPBarUIVisbile();
         if (HPBarUI.gameObject.activeSelf) {
@@ -141,4 +162,33 @@ public class EnemyScript : MonoBehaviour
         enemyID = _id;
     }
 
+    public float getEnemySpeed() {
+        return speed;
+    }
+
+    public float getEnemyOriginSpeed()
+    {
+        return originSpeed;
+    }
+
+    public void setEnemySpeed(float _speed) {
+        speed = _speed;
+    }
+
+    public void preventCollideEachOther() {
+        prevented = true;
+    }
+
+    public void notpreventCollideEachOther()
+    {
+        prevented = false;
+    }
+
+    public Vector2 getEnemyBattlePoint(Vector2 _pos) {
+        return Vector2.Distance(_pos, LeftBattleWall.transform.position) < Vector2.Distance(_pos, RightBattleWall.transform.position) ? LeftBattleWall.transform.position : RightBattleWall.transform.position;
+    }
+
+    private void OnDisable()
+    {
+    }
 }

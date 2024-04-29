@@ -2,13 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class EnemyInfo {
-    public int enemyID;
-    public float enemyMaxHp;
-    public float enemyAtk;
-    public float enemyAtkSpeed;
-}
+
 
 public class EnemyGoblin : EnemyScript
 {
@@ -17,7 +11,7 @@ public class EnemyGoblin : EnemyScript
     [SerializeField] BoxCollider2D DetectCollider;
 
 
-    protected override void ObjectInit()
+    public override void ObjectInit()
     {
         enemyCurHp = enemyMaxHp;
         HPBarUI.maxValue = enemyMaxHp;
@@ -32,33 +26,16 @@ public class EnemyGoblin : EnemyScript
 
         if (enemyAggroTarget == null) return;
 
-        bool AttackOn = false;
 
         Vector2 HeroPos = enemyAggroTarget.transform.position;
-        if (Mathf.Abs(HeroPos.x - transform.position.x) < 2f || Mathf.Abs(HeroPos.y - transform.position.y) > 2f)
-        {
-            Vector2 tempLeftPos = HeroPos;
-            tempLeftPos.x = tempLeftPos.x - 3f;
-            Vector2 tempRightPos = HeroPos;
-            tempRightPos.x = tempRightPos.x + 3f;
 
-            Vector3 tempPos = Vector2.Distance(tempLeftPos, transform.position) < Vector2.Distance(tempRightPos, transform.position) ? tempLeftPos : tempRightPos;
-
-            transform.position = Vector2.MoveTowards(transform.position, tempPos, speed * Time.deltaTime);
-
-        }
-        else
-        {
-            AttackOn = true;
-        }
+        
 
         if (InteractTime < enemyAtkSpeed) return;
 
-        if (AttackOn)
-        {
-            enemyAggroTarget.GetComponent <PlayerScript>().hitHp(enemyAtk);
-            InteractTime = 0f;
-        }
+
+        enemyAggroTarget.GetComponent <PlayerScript>().hitHp(enemyAtk);
+        InteractTime = 0f;
 
         Vector3 looking = HeroPos.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
         transform.GetChild(0).localScale = looking;
@@ -69,21 +46,15 @@ public class EnemyGoblin : EnemyScript
         TargetChangeCheck();
         // enemyAggroTarget = Heroes[enemyAggroTargetID];
 
-        // Vector3 TargetPos = enemyAggroTarget.transform.GetChild(1).transform.position;
         Vector3 TargetPos = enemyAggroTarget.transform.position;
+        Vector2 BattlePoint = enemyAggroTarget.GetComponent<PlayerScript>().getPlayerBattlePoint(transform.position);
+        transform.position = Vector2.MoveTowards(transform.position, BattlePoint, speed * Time.deltaTime);
 
-        if (Vector2.Distance(TargetPos, transform.position) > 4f && AttackRangedOn) {
-            AttackRangedOn = false;
-        }
-
-        if (AttackRangedOn) return;
-
-        if (Vector3.Distance(TargetPos, transform.position) < 0.001f)
+        if (Vector3.Distance(BattlePoint, transform.position) < 2f)
         {
-            return;
+            AttackRangedOn = true;
         }
 
-        transform.position = Vector2.MoveTowards(transform.position, TargetPos, speed * Time.deltaTime);
         if (TargetPos.x != transform.position.x) {
             Vector3 looking = TargetPos.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
             transform.GetChild(0).localScale = looking;
@@ -93,9 +64,6 @@ public class EnemyGoblin : EnemyScript
 
     private void Awake()
     {
-        ObjectInit();
-        
-
     }
 
     private void Start()

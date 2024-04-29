@@ -4,71 +4,124 @@ using UnityEngine;
 
 public class SpellLightning : MonoBehaviour
 {
+    [Header("Stat")]
+    [SerializeField] int playerID;
+    [SerializeField] float damage;
+    [SerializeField] float aggro;
+    [SerializeField] float currentTime;
+    [SerializeField] float durationTime;
+    [SerializeField] bool SpellActive;
+    // [SerializeField] float angle;
+
+
     [Header("Inspector")]
     [SerializeField] GameObject Ground;
     [SerializeField] Vector2 originPos;
     [SerializeField] Vector2 TargetPos;
-    [SerializeField] LineRenderer LaserLine;
     [SerializeField] GameObject LaserEffect;
+    [SerializeField] List<EnemyScript> Targets;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        LaserLine = GetComponent<LineRenderer>();
         originPos = transform.position;
-        Debug.Log(originPos);
-        
+        Targets = new List<EnemyScript>();
     }
 
     // Update is called once per frame
     void Update()
     {
-
-
-        // Camera.main.scree
-        // Vector3 worldConvertPos = Camera.main.ScreenToWorldPoint(originPos);
-        
-
-        // if direction right.
-        
-        float Angle = transform.rotation.z;
-
-        float tanCal = Mathf.Tan(Mathf.Deg2Rad * Angle);
-
-        float b = originPos.y  - (originPos.x * tanCal);
-        if (Angle == 0) {
-            b = 0;
+        if (SpellActive) {
+            currentTime += Time.fixedDeltaTime;
+            if (currentTime < durationTime)
+            {
+                
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
+    }
 
-        // Screen.Pos.x
-        float edgeY = tanCal * Screen.width + b;
-        if (edgeY > Screen.height) { 
-            float edgeX = (Screen.mainWindowPosition.y - b) / tanCal;
-            TargetPos = new Vector2(edgeX, Screen.height);  
-        }
-        else
+    public void hitEnemy() {
+        int enemies = Targets.Count - 1;
+
+        while (true)
         {
-            TargetPos = new Vector2(Screen.width, edgeY);
+            if (enemies < 0) break;
+
+            Targets[enemies--].hitHp(playerID, damage, aggro);
+        } 
+    }
+
+    public void SetLightning(int _playerID, float _damage, float _aggro, float _duraction, float _angle) {
+        playerID = _playerID;
+        damage = _damage;
+        aggro = _aggro;
+        durationTime = _duraction;
+
+
+        LaserEffect.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, _angle));
+        Vector2 distVec = new Vector2(50f, 1f);
+        LaserEffect.GetComponent<SpriteRenderer>().size = distVec;
+        LaserEffect.GetComponent<BoxCollider2D>().size = distVec;
+
+        distVec.x /= 2f;
+        distVec.y = 0f;
+        LaserEffect.GetComponent<BoxCollider2D>().offset = distVec;
+        SpellActive = true;
+
+        InvokeRepeating("hitEnemy", 0.0f, 0.2f);
+    }
+
+    public void AttackTriggerEnter(Collider2D collision) {
+
+        bool existCheck = false; ;
+        for (int inum = 0; inum < Targets.Count; inum++)
+        {
+            if (Targets[inum].GetComponent<EnemyScript>().getEnemyID() == collision.transform.parent.gameObject.GetComponent<EnemyScript>().getEnemyID())
+            {
+                existCheck = true;
+                break;
+            }
         }
 
-
-        Ray ray = new Ray(transform.position, transform.right);
-        RaycastHit hit;
-
-        LaserLine.SetPosition(0, (Vector2)originPos);
-        LaserLine.SetPosition(1, (Vector2)Camera.main.ScreenToWorldPoint(TargetPos));
-
-        //if (Physics.Raycast(ray, out hit, 100))
-        //{
-        //    LaserLine.SetPosition(1, hit.point);
-        //    LaserEffect.transform.localScale = new Vector3(hit.point.x, 1f, 1f);
-        //}
-        //else
-        //{
-        //    LaserLine.SetPosition(1, ray.GetPoint(100));
-        //    LaserEffect.transform.localScale = new Vector3(100f, 1f, 1f);
-        //}
+        if (!existCheck)
+        {
+            Targets.Add(collision.transform.parent.gameObject.GetComponent<EnemyScript>());
+        }
 
     }
+    public void AttackTriggerStay(Collider2D collision)
+    {
+        bool existCheck = false; ;
+        for (int inum = 0; inum < Targets.Count; inum++)
+        {
+            if (Targets[inum].GetComponent<EnemyScript>().getEnemyID() == collision.transform.parent.gameObject.GetComponent<EnemyScript>().getEnemyID())
+            {
+                existCheck = true;
+                break;
+            }
+        }
+
+        if (!existCheck)
+        {
+            Targets.Add(collision.transform.parent.gameObject.GetComponent<EnemyScript>());
+        }
+    }
+    public void AttackTriggerExit(Collider2D collision)
+    {
+        for (int inum = 0; inum < Targets.Count; inum++)
+        {
+            if (Targets[inum].GetComponent<EnemyScript>().getEnemyID() == collision.transform.parent.gameObject.GetComponent<EnemyScript>().getEnemyID())
+            {
+                Targets.RemoveAt(inum);
+                break;
+            }
+        }
+    }
+
+
 }

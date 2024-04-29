@@ -58,6 +58,20 @@ public class PlayerScript : MonoBehaviour
 
     [Header("External")]
     [SerializeField] protected Animator anim;
+    [SerializeField] GameObject LeftBattleWall;
+    [SerializeField] GameObject RightBattleWall;
+
+    public void resetStatus() {
+        isPlayerOnMouse = false;
+        isPlayerDragToMove = false;
+        isPlayerDownMouse = false;
+        isCommandedMove = false;
+        isCommandedAttack = false;
+        isAttackPlaying = false;
+        isMoveDone = false;
+        isSpellPlaying = false;
+        anim.StopPlayback();
+    }
 
 
     //public SpellScript overrideSpell(SpellScript _input) {
@@ -256,4 +270,10 @@ public class PlayerScript : MonoBehaviour
     public virtual SpellInfo getSpellInfo(int _val) {
         return new SpellInfo();
     }
+
+    public Vector2 getPlayerBattlePoint(Vector2 _pos)
+    {
+        return Vector2.Distance(_pos, LeftBattleWall.transform.position) < Vector2.Distance(_pos, RightBattleWall.transform.position) ? LeftBattleWall.transform.position : RightBattleWall.transform.position;
+    }
+
 }

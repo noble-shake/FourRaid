@@ -7,6 +7,7 @@ TagManager:
   - ground
   - player
   - enemy
+  - enemyPreventWall
   layers:
   - Default
   - TransparentFX

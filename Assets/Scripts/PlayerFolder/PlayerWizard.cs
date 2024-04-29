@@ -22,9 +22,30 @@ public class PlayerWizard: PlayerScript
     [Header("Spell1")]
     [SerializeField] GameObject Spell1Meteor;
     [SerializeField] float Spell1Duration = 2f;
-    [SerializeField] float Spell1Atk = 100f;
-    [SerializeField] float Spell1Aggro = 50f;
+    [SerializeField] float Spell1Atk = 60f;
+    [SerializeField] float Spell1Aggro = 10f;
     [SerializeField] Vector3 Spell1TargetPos;
+
+    [Header("Spell2")]
+    [SerializeField] GameObject Spell2Frozen;
+    [SerializeField] float Spell2Duration = 8f;
+    [SerializeField] float Spell2Atk = 3f;
+    [SerializeField] float Spell2Aggro = 0f;
+    [SerializeField] float Spell2Spread = 3f;
+    [SerializeField] Vector3 Spell2TargetPos;
+
+    [Header("Spell3")]
+    [SerializeField] GameObject Spell3Lightning;
+    [SerializeField] float Spell3Duration = 2f;
+    [SerializeField] float Spell3Atk = 15f;
+    [SerializeField] float Spell3Aggro = 5f;
+    [SerializeField] Vector3 Spell3TargetPos;
+
+    [Header("Spell4")]
+    [SerializeField] GameObject Spell4Dragon;
+    [SerializeField] float Spell4Atk = 60f;
+    [SerializeField] float Spell4Aggro = 10f;
+    [SerializeField] Canvas DragonUI;
 
     [SerializeField] GameObject FireBall;
     
@@ -366,16 +387,9 @@ public class PlayerWizard: PlayerScript
         isSpellPlaying = true;
         ActivatedSpell = _num;
 
-        if (_num == 1)
-        {
-            Spell2ChargingTime = 0.5f;
-            // Spell2current = Spell2duration;
-        }
-
         if (_num == 3)
         {
-            Spell4ChargingTime = 0.8f;
-            // Spell4current = Spell4duration;
+            Spell4ChargingTime = 0.5f;
         }
     }
 
@@ -395,6 +409,19 @@ public class PlayerWizard: PlayerScript
             Spell3ChargingTime = 2f;
         }
 
+        if (_num == 1)
+        {
+            Spell2TargetPos = _targetPos;
+            Spell2ChargingTime = 0.5f;
+        }
+
+        if (_num == 2) 
+        {
+            Spell3TargetPos = _targetPos;
+            Spell3ChargingTime = 0.3f;
+            
+        }
+
         Vector3 looking = _targetPos.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
         transform.GetChild(0).localScale = looking;
         transform.GetChild(1).localScale = looking;
@@ -406,25 +433,11 @@ public class PlayerWizard: PlayerScript
         ActivatedSpell = _num;
         EnemyObject = _targetObject;
 
-        //if (_num == 0)
-        //{
-        //    Spell1ChargingTime = 1f;
-        //}
-
-
-        // commandAttack(EnemyObject);
-
 
     }
 
     public void Spell1()
     {
-        // Targetting Spell : Jump Attack
-
-        // animation
-
-
-        // Charging Animation
         if (Spell1ChargingTime > 0f) return;
 
         isCommandedMove = false;
@@ -439,7 +452,6 @@ public class PlayerWizard: PlayerScript
         isCommandedAttack = true;
         isCommandedMove = false;
         AttackRangedOn = true;
-        playerAttack();
     }
 
     public override void hitHp(float _value)
@@ -450,6 +462,9 @@ public class PlayerWizard: PlayerScript
         {
             // die
             playerCurHp = 0;
+            isAlive = false;
+            // Destroy(gameObject);
+            gameObject.SetActive(false);
         }
         HPBarUIVisbile();
         if (HPBarUI.gameObject.activeSelf)
@@ -461,68 +476,69 @@ public class PlayerWizard: PlayerScript
 
     public void Spell2()
     {
-        // Buff : damage reduce & aggro max
+        // NonTargetting Spell : Frozen
 
-        //if (Spell2ChargingTime > 0f) return;
+        // animation
 
-        //isSpell2Activated = true;
-        //Spell2current = Spell2duration;
-        //ActivatedSpell = -1;
-        //isSpellPlaying = false;
+
+        // Charging Animation
+        if (Spell2ChargingTime > 0f) return;
+
+        isCommandedMove = false;
+
+        GameObject Frozen = Instantiate(Spell2Frozen, Spell2TargetPos, Spell3Lightning.transform.rotation);
+        Frozen.GetComponent<SpellIce>().SetFrozen(playerID, Spell2Atk, Spell2Aggro, Spell2Duration, Spell2Spread);
+
+        ActivatedSpell = -1;
+        isSpellPlaying = false;
+        isCommandedMove = false;
 
     }
 
     public void Spell3()
     {
-        // Shield Throw and Smite.
+        // NonTargetting Spell : Lightning
 
-        //if (Spell3ChargingTime > 0f) return;
+        // animation
 
-        //GameObject objArrow = Instantiate(ShieldObject, transform.position, Quaternion.Euler(new Vector3(0f, 0f, ThorwAngle)));
-        //RangedShield shd = objArrow.GetComponent<RangedShield>();
 
-        //shd.SetPlayerRangedAttack(playerID, 4f, playerAtk, playerAtkAggro); // ID, speed , dmg, aggro
+        // Charging Animation
+        if (Spell3ChargingTime > 0f) return;
 
-        //// EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, playerAtk, playerAtkAggro);
-        //AttackTime = 0f;
-        //ActivatedSpell = -1;
-        //isSpellPlaying = false;
+        isCommandedMove = false;
+
+        GameObject Lightning = Instantiate(Spell3Lightning, transform.position, Spell3Lightning.transform.rotation);
+        float angle = Quaternion.FromToRotation(Vector3.right, Spell3TargetPos - transform.position).eulerAngles.z;
+        Lightning.GetComponent<SpellLightning>().SetLightning(playerID, Spell3Atk, Spell3Aggro, Spell3Duration, angle);
+
+        ActivatedSpell = -1;
+        isSpellPlaying = false;
+        isCommandedMove = false;
 
     }
 
     public void Spell4()
     {
-        // Wheelwind
+        // Active Spell : Lightning
 
-        //if (Spell4ChargingTime > 0f) return;
+        // animation
 
-        //isSpell4Activated = true;
-        //Spell4current = Spell4duration;
-        //ActivatedSpell = -1;
-        //isSpellPlaying = false;
 
-        //StartCoroutine(WheelWind());
+        // Charging Animation
+        if (Spell4ChargingTime > 0f) return;
+
+        isCommandedMove = false;
+
+        // GameObject Dragon = Instantiate(Spell4Dragon, new Vector3(0f, 0f, 0f), Quaternion.Euler(new Vector3(0f, 0f, 0f)));
+        Spell4Dragon.GetComponent<SpellDragon>().SetDragonBreath(playerID, Spell4Atk, Spell4Aggro);
+        // Spell4Dragon.SetActive(true);
+        
+
+        ActivatedSpell = -1;
+        isSpellPlaying = false;
+        isCommandedMove = false;
 
     }
-
-    //IEnumerator WheelWind()
-    //{
-    //    while (isSpell4Activated)
-    //    {
-    //        yield return new WaitForSeconds(0.3f);
-
-    //        int enemies = WheelWindTargets.Count - 1;
-
-
-    //        while (true)
-    //        {
-    //            if (enemies < 0) break;
-
-    //            WheelWindTargets[enemies--].hitHp(playerID, Spell4Atk, Spell4Aggro);
-
-    //        }
-    //    }
-    //}
 
     public override float SpellCooltimeCheck(int _input)
     {
@@ -547,7 +563,7 @@ public class PlayerWizard: PlayerScript
                 _IconsImage = SpellIcon[_val];
                 return new SpellInfo() { spellSlotID = _spellSlotID, spellType = _spellType, IconImage = _IconsImage, cooltime = _cooltime };
             case 1:
-                _spellType = SpellType.SpellActive;
+                _spellType = SpellType.SpellNonTargetting;
                 _IconsImage = SpellIcon[_val];
                 return new SpellInfo() { spellSlotID = _spellSlotID, spellType = _spellType, IconImage = _IconsImage, cooltime = _cooltime };
             case 2:

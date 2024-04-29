@@ -87,6 +87,7 @@ public class SceneMenu : MonoBehaviour
     [SerializeField] GameObject StageCommentObject;
     // [SerializeField] Image StageGround;
     // [SerializeField] TMP_Text StageText;
+    [SerializeField] GameObject LoadingScene;
 
     [Header("External")]
     [SerializeField] TextAsset HeroSkillInfoJson;
@@ -106,16 +107,17 @@ public class SceneMenu : MonoBehaviour
     [SerializeField] GameObject DeveloperObject;
     [SerializeField] Button DeveloperBack;
 
+    [Header("Game Set Up")]
+    [SerializeField] int StageIncount;
+    [SerializeField] bool StageInActive;
+
     public void LevelLoad()
     {
-        if (PlayerPrefs.HasKey("Stage2Open")) {
+        if (PlayerPrefs.GetInt("Stage2Open") == 1) {
             Stage2Open = true;
-        }
-        if (PlayerPrefs.HasKey("Stage3Open"))
-        {
             Stage3Open = true;
         }
-        if (PlayerPrefs.HasKey("Stage4Open"))
+        if (PlayerPrefs.GetInt("Stage4Open") == 1)
         {
             Stage4Open = true;
         }
@@ -159,6 +161,7 @@ public class SceneMenu : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            // DontDestroyOnLoad(instance);
         }
         else { 
             Destroy(gameObject);
@@ -516,6 +519,7 @@ public class SceneMenu : MonoBehaviour
         StageCommentObject.transform.GetChild(2).GetComponent<TMP_Text>().text = StageDict[1].descript;
         MenuOff(StageBattleGrounds);
         SceneName = "Stage1Scene";
+        StageIncount = 0;
     }
 
     public void OnStageTwo()
@@ -532,6 +536,8 @@ public class SceneMenu : MonoBehaviour
         StageCommentObject.transform.GetChild(1).GetComponent<TMP_Text>().text = StageDict[2].stageName;
         StageCommentObject.transform.GetChild(2).GetComponent<TMP_Text>().text = StageDict[2].descript;
         MenuOff(StageBattleGrounds);
+        SceneName = "Stage2Scene";
+        StageIncount = 1;
     }
 
     public void OnStageThree()
@@ -549,6 +555,8 @@ public class SceneMenu : MonoBehaviour
         StageCommentObject.transform.GetChild(1).GetComponent<TMP_Text>().text = StageDict[3].stageName;
         StageCommentObject.transform.GetChild(2).GetComponent<TMP_Text>().text = StageDict[3].descript;
         MenuOff(StageBattleGrounds);
+        SceneName = "Stage3Scene";
+        StageIncount = 2;
     }
 
     public void OnStageFour()
@@ -566,6 +574,8 @@ public class SceneMenu : MonoBehaviour
         StageCommentObject.transform.GetChild(1).GetComponent<TMP_Text>().text = StageDict[4].stageName;
         StageCommentObject.transform.GetChild(2).GetComponent<TMP_Text>().text = StageDict[4].descript;
         MenuOff(StageBattleGrounds);
+        SceneName = "Stage4Scene";
+        StageIncount = 3;
     }
 
     public void OnStageBack() {
@@ -580,12 +590,40 @@ public class SceneMenu : MonoBehaviour
 
     public void OnStageIn() {
         // GameLoad
+        StageInActive = true;
+        // MenuSceneMainMenu();
+        TextTitle.SetActive(true);
+        MenuOff(MainMenuObj);
+        MenuOff(StageMenuObj);
+        MenuOff(CharacterMenuObj);
+        MenuOff(StageCheckObj);
+        MenuOff(CharacterDescription);
+        MenuOff(SkillDescription);
+        MenuOff(SkillSlot);
+        MenuOff(StageBattleGrounds);
+        MenuOff(StageCommentObject);
+        StageIn.gameObject.SetActive(false);
+        MenuOff(DeveloperObject);
+        DeveloperBack.gameObject.SetActive(false);
+        LoadingScene.SetActive(true);
 
+        // StageManager.instance.StageSwitching(StageIncount);
         SceneManager.LoadSceneAsync(SceneName);
-        
-
+        // StartCoroutine(AsyncLoad());
     }
 
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        
+    }
 
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+    }
 }

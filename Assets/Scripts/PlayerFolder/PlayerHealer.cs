@@ -178,6 +178,9 @@ public class PlayerHealer : PlayerScript
         {
             // die
             playerCurHp = 0;
+            isAlive = false;
+            // Destroy(gameObject);
+            gameObject.SetActive(false);
         }
         HPBarUIVisbile();
         if (HPBarUI.gameObject.activeSelf)
@@ -426,7 +429,9 @@ public class PlayerHealer : PlayerScript
 
     public override void ActiveSpellActivate(int _num)
     {
-        isSpellPlaying = true;
+        if (HeroObject == null) return;
+
+            isSpellPlaying = true;
         ActivatedSpell = _num;
 
         if (_num == 0) {
@@ -452,13 +457,17 @@ public class PlayerHealer : PlayerScript
             Spell4current = Spell4duration;
         }
 
-        Vector3 looking = HeroObject.transform.position.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
-        transform.GetChild(0).localScale = looking;
-        transform.GetChild(1).localScale = looking;
+        if (HeroObject != null) {
+            Vector3 looking = HeroObject.transform.position.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+            transform.GetChild(0).localScale = looking;
+            transform.GetChild(1).localScale = looking;
+        }
+
     }
 
     public override void NonTargettingSpellActivate(int _num, Vector3 _targetPos = new Vector3())
     {
+        if (HeroObject == null) return;
         // Instantiate Shield Attack and move.
         isSpellPlaying = true;
         ActivatedSpell = _num;
@@ -537,9 +546,12 @@ public class PlayerHealer : PlayerScript
         StartCoroutine(SummonCow());
         isCommandedAttack = true;
 
-        Vector3 looking = HeroObject.transform.position.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
-        transform.GetChild(0).localScale = looking;
-        transform.GetChild(1).localScale = looking;
+        if (HeroObject != null) {
+            Vector3 looking = HeroObject.transform.position.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+            transform.GetChild(0).localScale = looking;
+            transform.GetChild(1).localScale = looking;
+        }
+
 
     }
 
