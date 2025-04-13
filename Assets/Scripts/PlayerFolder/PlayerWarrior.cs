@@ -1,12 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
 
 
 public class PlayerWarrior: PlayerScript
@@ -48,6 +42,8 @@ public class PlayerWarrior: PlayerScript
     [SerializeField] GameObject ShieldObject;
 
     [SerializeField] List<EnemyScript> WheelWindTargets;
+
+    public PlayerState CurrentState;
 
     // UNITY CYCLE
     private void Awake()
@@ -133,38 +129,57 @@ public class PlayerWarrior: PlayerScript
         }
     }
 
+    public enum PlayerState
+    { 
+        Idle,
+        Move,
+        Attack,
+        Spell,
+    }
+
     void FixedUpdate()
     {
         TimeFlowing();
+        switch (CurrentState)
+        {
+            default:
+            case PlayerState.Idle:
+                break;
+            case PlayerState.Move:
+                playerMove();
+                break;
+            case PlayerState.Attack:
+                playerAttack();
+                break;
+            case PlayerState.Spell:
+                switch (ActivatedSpell)
+                {
+                    case 0:
+                        anim.ResetTrigger("Move");
+                        anim.ResetTrigger("Attack");
+
+                        Spell1();
+                        break;
+                    case 1:
+                        Spell2();
+                        break;
+                    case 2:
+                        Spell3();
+                        break;
+                    case 3:
+                        Spell4();
+                        break;
+                    case -1:
+                        CurrentState = PlayerState.Idle;
+                        break;
+                }
+                break;
+        }
+
+        
 
         HPBarUIVisbile();
-        if (isSpellPlaying)
-        {
-            switch (ActivatedSpell) {
-                case 0:
-                    anim.ResetTrigger("Move");
-                    anim.ResetTrigger("Attack");
-                    
-                    Spell1();
-                    break;
-                case 1:
-                    Spell2();
-                    break;
-                case 2:
-                    Spell3();
-                    break;
-                case 3:
-                    Spell4();
-                    break;
-                case -1:
-                    isSpellPlaying = false;
-                    break;
-            }
-        }
-        else {
-            playerMove();
-            playerAttack();
-        }
+       
     }
 
 
@@ -190,6 +205,7 @@ public class PlayerWarrior: PlayerScript
         }
         if (Vector2.Distance(convertedPos, transform.position) < 0.1f)
         {
+            CurrentState = PlayerState.Idle;
             isCommandedMove = false;
             return;
         }
@@ -202,6 +218,8 @@ public class PlayerWarrior: PlayerScript
             transform.GetChild(0).localScale = looking;
             transform.GetChild(1).localScale = looking;
         }
+
+
     }
 
     private void playerAttack() {
@@ -223,12 +241,22 @@ public class PlayerWarrior: PlayerScript
         if (AttackTime < playerAtkSpeed) return;
 
         if (AttackOn) {
-            Vector3 looking = EnemyObject.transform.position.x > transform.position.x ? new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
+            Vector3 looking = EnemyObject.transform.position.x > transform.position.x ? 
+                new Vector3(1f, 1f, 1f) : new Vector3(-1f, 1f, 1f);
             transform.GetChild(0).localScale = looking;
             transform.GetChild(1).localScale = looking;
 
-            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-                anim.SetTrigger("Attack");
+            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("WarriorAttack"))
+            {
+                float animTime = anim.GetCurrentAnimatorStateInfo(0).normalizedTime;
+                if (animTime == 0)
+                {
+                    anim.SetTrigger("WarriorAttack");
+                }
+
+            }
+               
+
         }
     }
 
@@ -299,7 +327,8 @@ public class PlayerWarrior: PlayerScript
             isPlayerDragToMove = false;
 
             commandMove(Input.mousePosition);
-            
+            CurrentState = PlayerState.Move;
+
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit2D[] hit = Physics2D.GetRayIntersectionAll(ray);
 
@@ -312,6 +341,7 @@ public class PlayerWarrior: PlayerScript
                         {
                             commandAttack(target.collider.transform.parent.gameObject);
                         }
+                        CurrentState = PlayerState.Attack;
                     }
                 }
             }
@@ -405,6 +435,7 @@ public class PlayerWarrior: PlayerScript
     }
 
     public override void ActiveSpellActivate(int _num) {
+        CurrentState = PlayerState.Spell;
         isSpellPlaying = true;
         ActivatedSpell = _num;
 
@@ -486,6 +517,8 @@ public class PlayerWarrior: PlayerScript
             isCommandedMove = false;
             AttackRangedOn = true;
             commandAttack(EnemyObject);
+
+            CurrentState = PlayerState.Attack; 
         }
     }
 
@@ -525,6 +558,7 @@ public class PlayerWarrior: PlayerScript
         ActivatedSpell = -1;
         isSpellPlaying = false;
 
+        CurrentState = PlayerState.Idle;
     }
 
     public void Spell3() {
@@ -542,6 +576,7 @@ public class PlayerWarrior: PlayerScript
         ActivatedSpell = -1;
         isSpellPlaying = false;
 
+        CurrentState = PlayerState.Idle;
     }
 
     public void Spell4() {
@@ -556,6 +591,7 @@ public class PlayerWarrior: PlayerScript
 
         StartCoroutine(WheelWind());
 
+        CurrentState = PlayerState.Idle;
     }
 
     IEnumerator WheelWind () {

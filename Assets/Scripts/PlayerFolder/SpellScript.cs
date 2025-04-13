@@ -107,10 +107,7 @@ public class SpellScript: MonoBehaviour
         DarkSkin.gameObject.SetActive(true);
         while (true)
         {
-            
-
             Vector3 IndicatorPos = IndicatorPlayer.transform.GetChild(1).transform.position;
-
             Vector3 TargetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             TargetPos.z = 0f;
 
@@ -131,8 +128,6 @@ public class SpellScript: MonoBehaviour
                 // yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
                 break;
             }
-
-            
             yield return null;
         }
         DarkSkin.gameObject.SetActive(false);
@@ -143,7 +138,6 @@ public class SpellScript: MonoBehaviour
         {
             privilegedPlayer.GetComponent<PlayerScript>().setSpellCooltime(spellSlotID);
         }
-
         Time.timeScale = 1f;
     }
 
@@ -159,10 +153,7 @@ public class SpellScript: MonoBehaviour
         bool isCanceled = true;
         DarkSkin.gameObject.SetActive(true);
         while (true) {
-            
-
             Vector3 IndicatorPos = IndicatorPlayer.transform.GetChild(1).transform.position;
-
             Vector3 TargetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             TargetPos.z = 0f;
             
@@ -192,8 +183,6 @@ public class SpellScript: MonoBehaviour
                 // yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
                 break;
             }
-
-            
             yield return null;
         }
         DarkSkin.gameObject.SetActive(false);
@@ -203,9 +192,7 @@ public class SpellScript: MonoBehaviour
         if (!isCanceled) {
             privilegedPlayer.GetComponent<PlayerScript>().setSpellCooltime(spellSlotID);
         }
-        
         Time.timeScale = 1f;
-
     }
 
     public void OnActive()

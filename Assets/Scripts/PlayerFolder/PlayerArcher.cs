@@ -385,9 +385,6 @@ public class PlayerArcher: PlayerScript
     }
 
     public void Spell1() {
-        // Targetting Spell : Jump Attack
-
-        // animation
 
         if (Spell1ChargingTime > 0f) return;
         isCommandedMove = false;
@@ -398,7 +395,6 @@ public class PlayerArcher: PlayerScript
         AttackTime = 0f;
         ActivatedSpell = -1;
         isSpellPlaying = false;
-
     }
 
     IEnumerator Spell1ArrowShoot() {
