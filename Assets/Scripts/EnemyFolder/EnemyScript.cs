@@ -88,17 +88,6 @@ public class EnemyScript : MonoBehaviour
             }
         }
 
-        //    for (int i = 0; i < Heroes.Count; i++)
-        //    {
-        //        PlayerAliveCheck = Heroes[i].GetComponent<PlayerScript>().getPlayerAlive();
-        //        float aggro = ;
-        //        if (MaxAggro > aggro && PlayerAliveCheck)
-        //        {
-        //            MaxAggro = aggro;
-        //            TargetID = i;
-        //        }
-        //    }
-
         enemyAggroTargetID = maxOrder;
         enemyAggroTarget = Heroes[enemyAggroTargetID];
     }

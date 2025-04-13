@@ -238,9 +238,6 @@ public class StageManager : MonoBehaviour
     public void EnemySpawn(int _input) {
         List<FlowingObject> flows = StageSpawner[_input];
         for (int inum = 0; inum < flows.Count; inum++) {
-            //            public int EnemyID;
-            //public float delay;
-            //public EnemyType enemyType;
             FlowingObject flow = flows[inum];
             switch (flow.enemyType) {
                 case EnemyType.EnemyGoblin:
