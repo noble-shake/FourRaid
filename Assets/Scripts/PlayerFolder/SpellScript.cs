@@ -43,12 +43,6 @@ public class SpellScript: MonoBehaviour
         IconImage.fillAmount = cooltime;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     private void FixedUpdate()
     {
         if (privilegedPlayer != null) 
@@ -56,13 +50,6 @@ public class SpellScript: MonoBehaviour
             IconImage.fillAmount = privilegedPlayer.GetComponent<PlayerScript>().SpellCooltimeCheck(spellSlotID);
         }
 
-        //currenmt_cooltime -= Time.deltaTime;
-        //if (currenmt_cooltime < 0)
-        //{
-        //    currenmt_cooltime = 0f;
-        //}
-
-        //IconImage.fillAmount = 1 - (float)(currenmt_cooltime / cooltime);
     }
 
     public void setIconSprite(Sprite _spell)

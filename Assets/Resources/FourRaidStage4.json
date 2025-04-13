@@ -1,18 +1,24 @@
 [
   {
-    "delay": "5",
+    "delay": "2",
     "goblins": "0",
-    "bats": "1",
-    "boss": "2"
+    "bats": "0",
+    "boss": "0"
   },
   {
-    "delay": "6",
-    "goblins": "3",
+    "delay": "3",
+    "goblins": "0",
     "bats": "0",
     "boss": "1"
   },
   {
-    "delay": "20",
+    "delay": "4",
+    "goblins": "0",
+    "bats": "0",
+    "boss": "2"
+  },
+  {
+    "delay": "5",
     "goblins": "0",
     "bats": "0",
     "boss": "3"

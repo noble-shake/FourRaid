@@ -824,6 +824,7 @@ GameObject:
   - component: {fileID: 2333792604881198664}
   - component: {fileID: 5550452750117802838}
   - component: {fileID: 3274795458733942985}
+  - component: {fileID: -1080782426124701846}
   m_Layer: 6
   m_Name: PlayerArcher
   m_TagString: player
@@ -934,6 +935,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!210 &-1080782426124701846
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8636907889271027310}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1 &9083573840837135213
 GameObject:
   m_ObjectHideFlags: 0

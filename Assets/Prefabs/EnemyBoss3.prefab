@@ -682,6 +682,7 @@ GameObject:
   - component: {fileID: 1283248619281475908}
   - component: {fileID: 3544536759034701072}
   - component: {fileID: 7398216511905884512}
+  - component: {fileID: 4965708223421826050}
   m_Layer: 8
   m_Name: EnemyBoss3
   m_TagString: Untagged
@@ -794,6 +795,18 @@ MonoBehaviour:
   BossUIObject: {fileID: 448215596558535402, guid: dd9b548da569b604c860b27abab48c80, type: 3}
   BossHPBarUI: {fileID: 0}
   BossHPBarUIName: {fileID: 0}
+--- !u!210 &4965708223421826050
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6121351228583929606}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1 &6260087775119216522
 GameObject:
   m_ObjectHideFlags: 0

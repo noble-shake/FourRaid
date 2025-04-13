@@ -165,9 +165,6 @@ public class PlayerWarrior: PlayerScript
             playerMove();
             playerAttack();
         }
-
-
-
     }
 
 
@@ -186,7 +183,6 @@ public class PlayerWarrior: PlayerScript
         MovePos.z = Camera.main.transform.position.z;
         convertedPos = Camera.main.ScreenToWorldPoint(MovePos);
         convertedPos.z = transform.position.z;
-
         
         if (EnemyObject != null) {
             BattlePoint = EnemyObject.GetComponent<EnemyScript>().getEnemyBattlePoint(transform.position);
@@ -197,7 +193,6 @@ public class PlayerWarrior: PlayerScript
             isCommandedMove = false;
             return;
         }
-        
 
         transform.position = Vector2.MoveTowards(transform.position, convertedPos, speed * Time.deltaTime);
 
@@ -207,19 +202,15 @@ public class PlayerWarrior: PlayerScript
             transform.GetChild(0).localScale = looking;
             transform.GetChild(1).localScale = looking;
         }
-
-
     }
 
     private void playerAttack() {
         if (isCommandedMove) return;
-
         if (EnemyObject == null) return;
 
         bool AttackOn = false;
 
         BattlePoint = EnemyObject.GetComponent<EnemyScript>().getEnemyBattlePoint(transform.position);
-
         
         if (Vector2.Distance(transform.position, BattlePoint) < 4f)
         {
@@ -238,9 +229,14 @@ public class PlayerWarrior: PlayerScript
 
             if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
                 anim.SetTrigger("Attack");
-            EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, playerAtk, playerAtkAggro);
-            AttackTime = 0f;
         }
+    }
+
+    private void AnimationJudge()
+    {
+        if (EnemyObject == null) return;
+        EnemyObject.GetComponent<EnemyScript>().hitHp(playerID, playerAtk, playerAtkAggro);
+        AttackTime = 0f;
     }
 
     public virtual void commandMove(Vector3 _pos) {
@@ -304,11 +300,8 @@ public class PlayerWarrior: PlayerScript
 
             commandMove(Input.mousePosition);
             
-
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
             RaycastHit2D[] hit = Physics2D.GetRayIntersectionAll(ray);
-            
 
             if (hit != null) {
                 foreach (RaycastHit2D target in hit) {
@@ -321,14 +314,11 @@ public class PlayerWarrior: PlayerScript
                         }
                     }
                 }
-
-
             }
         }
         if (IndicatorPlayer.transform.GetChild(1).transform.gameObject.activeSelf) {
             IndicatorPlayer.transform.GetChild(1).transform.gameObject.SetActive(false);
         }
-
         isPlayerDownMouse = false;
     }
 

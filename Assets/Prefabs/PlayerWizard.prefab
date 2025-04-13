@@ -824,6 +824,7 @@ GameObject:
   - component: {fileID: 116682175467496036}
   - component: {fileID: 5820744413668738211}
   - component: {fileID: 6232826475498681316}
+  - component: {fileID: 1550867610460353814}
   m_Layer: 6
   m_Name: PlayerWizard
   m_TagString: player
@@ -944,6 +945,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!210 &1550867610460353814
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8765602766524686487}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1 &9099585018703946359
 GameObject:
   m_ObjectHideFlags: 0

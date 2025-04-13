@@ -982,6 +982,7 @@ GameObject:
   - component: {fileID: 5886566581588950735}
   - component: {fileID: 5372395979996952991}
   - component: {fileID: 4552355008811160041}
+  - component: {fileID: -2735998184804871172}
   m_Layer: 8
   m_Name: EnemyBoss1
   m_TagString: Untagged
@@ -1071,6 +1072,7 @@ MonoBehaviour:
   InteractTime: 0
   LeftBattleWall: {fileID: 5133973425637233518}
   RightBattleWall: {fileID: 7845120374750242300}
+  BossName: Gobline Warrior
   AttackCollider: {fileID: 903528922404336211}
   DetectCollider: {fileID: 2134360641873687617}
   BossSpellCooltime: 6
@@ -1081,9 +1083,18 @@ MonoBehaviour:
   BossAttackActivate: 0
   Indicator: {fileID: 5276588550761571375}
   Targets: []
-  BossUIObject: {fileID: 448215596558535402, guid: dd9b548da569b604c860b27abab48c80, type: 3}
-  BossHPBarUI: {fileID: 0}
-  BossHPBarUIName: {fileID: 0}
+--- !u!210 &-2735998184804871172
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9155626097885948052}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1 &9213810713795631870
 GameObject:
   m_ObjectHideFlags: 0

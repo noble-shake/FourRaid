@@ -175,6 +175,7 @@ GameObject:
   - component: {fileID: 5606434589780602700}
   - component: {fileID: 5120082547853335054}
   - component: {fileID: 1224516554748262797}
+  - component: {fileID: 7834915548471075752}
   m_Layer: 8
   m_Name: EnemyBat
   m_TagString: Untagged
@@ -273,6 +274,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!210 &7834915548471075752
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1629938893356286140}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1 &1780983023881113681
 GameObject:
   m_ObjectHideFlags: 0

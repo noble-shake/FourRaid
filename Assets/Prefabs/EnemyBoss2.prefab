@@ -1279,6 +1279,7 @@ GameObject:
   - component: {fileID: 6947240786235589816}
   - component: {fileID: 7420607332727805769}
   - component: {fileID: 4059625132976661626}
+  - component: {fileID: -4845295720645778914}
   m_Layer: 8
   m_Name: EnemyBoss2
   m_TagString: Untagged
@@ -1368,6 +1369,7 @@ MonoBehaviour:
   InteractTime: 0
   LeftBattleWall: {fileID: 7403788547605125278}
   RightBattleWall: {fileID: 9164945739778201031}
+  BossName: Keroberos
   AttackCollider: {fileID: 6850591153020564748}
   DetectCollider: {fileID: 9148214774013154856}
   TargetFocused: 0
@@ -1384,9 +1386,18 @@ MonoBehaviour:
   angle2: 0
   angle3: 0
   Targets: []
-  BossUIObject: {fileID: 448215596558535402, guid: dd9b548da569b604c860b27abab48c80, type: 3}
-  BossHPBarUI: {fileID: 0}
-  BossHPBarUIName: {fileID: 0}
+--- !u!210 &-4845295720645778914
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7930024907173584740}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1 &9164945739778201031
 GameObject:
   m_ObjectHideFlags: 0

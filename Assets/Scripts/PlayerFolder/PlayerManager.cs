@@ -73,10 +73,6 @@ public class PlayerManager : MonoBehaviour
         //spells.RemoveAt(0);
         spellUIDeActive();
     }
-    void Start()
-    {
-
-    }
 
     void Update()
     {
@@ -108,9 +104,6 @@ public class PlayerManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             bool isPlayerExist = false;
-
-            // for(int inum = 0; )
-
 
             foreach (RaycastHit2D target in hits)
             {

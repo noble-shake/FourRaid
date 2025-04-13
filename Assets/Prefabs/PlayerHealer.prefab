@@ -316,6 +316,7 @@ GameObject:
   - component: {fileID: 1478068084617096571}
   - component: {fileID: 6105045811903274851}
   - component: {fileID: 8307332566173886706}
+  - component: {fileID: 1761969958404128161}
   m_Layer: 6
   m_Name: PlayerHealer
   m_TagString: player
@@ -435,6 +436,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!210 &1761969958404128161
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3192817248316697271}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1 &3459216279200096872
 GameObject:
   m_ObjectHideFlags: 0

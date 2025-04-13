@@ -88,25 +88,11 @@ public class PlayerWizard: PlayerScript
             SpellFillAmount[inum] = 1 - (float)(SpellCurrentCooltime[inum] / SpellCooltime[inum]);
         }
 
-        //if (isSpell2Activated)
-        //{
-        //    Spell2current -= Time.fixedDeltaTime;
-        //    if (Spell2current < 0f)
-        //    {
-        //        isSpell2Activated = false;
-        //        Spell2Target.GetComponent<PlayerScript>().setPlayerAtk(TargetOriginAtk);
-        //        Spell2Target = null;
-        //    }
-        //}
-
-
-
         AttackTime += Time.fixedDeltaTime;
         Spell1ChargingTime -= Time.fixedDeltaTime;
         Spell2ChargingTime -= Time.fixedDeltaTime;
         Spell3ChargingTime -= Time.fixedDeltaTime;
         Spell4ChargingTime -= Time.fixedDeltaTime;
-
 
 
         // except Infinity

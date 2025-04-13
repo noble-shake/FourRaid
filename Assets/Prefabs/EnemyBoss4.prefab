@@ -525,6 +525,7 @@ GameObject:
   - component: {fileID: 4981323465506264913}
   - component: {fileID: 6877511662544885557}
   - component: {fileID: 7804702133819844346}
+  - component: {fileID: -8644880560231820666}
   m_Layer: 8
   m_Name: EnemyBoss4
   m_TagString: Untagged
@@ -645,6 +646,19 @@ MonoBehaviour:
   BossUIObject: {fileID: 0}
   BossHPBarUI: {fileID: 0}
   BossHPBarUIName: {fileID: 0}
+  TargetFocus: 1
+--- !u!210 &-8644880560231820666
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1377691589176012526}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1 &2013724927354766185
 GameObject:
   m_ObjectHideFlags: 0

@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 8458908203624809511}
   - component: {fileID: 9201248280911773356}
   - component: {fileID: 8569133059051626642}
+  - component: {fileID: -3310504563401258141}
   m_Layer: 0
   m_Name: Dragon
   m_TagString: Untagged
@@ -202,6 +203,18 @@ MonoBehaviour:
   originPos: {x: 0, y: 0}
   TargetPos: {x: 0, y: 0}
   Targets: []
+--- !u!210 &-3310504563401258141
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7758564300875871852}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1 &8525217949601156891
 GameObject:
   m_ObjectHideFlags: 0

@@ -73,14 +73,6 @@ public class PlayerScript : MonoBehaviour
         anim.StopPlayback();
     }
 
-
-    //public SpellScript overrideSpell(SpellScript _input) {
-    //    // _input = _input.GetComponent<SpellWarrior1>();
-
-    //    //return GetComponent("SpellWarrior1");
-    //    return _input.GetComponent<SpellWarrior1>();
-    //}
-
     public virtual float getSpellCurrentCooltime(int _input) {
         return SpellCurrentCooltime[_input];
     }

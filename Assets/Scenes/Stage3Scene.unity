@@ -1175,7 +1175,7 @@ MonoBehaviour:
   BossHpUI: {fileID: 1799641158380424185}
   BossHpUISlider: {fileID: 1799641158380424187}
   BossHpUIName: {fileID: 1799641158380424186}
-  StageCount: 0
+  StageCount: 2
   pause: 0
   eventOn: 0
   ClearEventOn: 0
